@@ -7,7 +7,7 @@ import getProductsSearchData from "@/lib/getProductsSearchData";
 const SearchProducts = ({ term, productsData }: { term: any, productsData: any }) => {
 
     return <ProductsPage selectedBrands="" isSearchPage={true} filterPath={`search?term=${term}`} categoryData={productsData} menuData={["Products", " "
-    ]} />
+    ]} type="search"/>
 }
 
 
