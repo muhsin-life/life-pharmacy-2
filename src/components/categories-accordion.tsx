@@ -44,10 +44,10 @@ export default function Example({ acc_data }: { acc_data: any }) {
                                             /> </div>
                                         <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm mb-2 bg-slate-50 backdrop-blur-lg rounded-xl  text-gray-500">
                                             <div className="grid lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-3 gap-y-5 p-2">{cat_data.sections.map((ch_data: any) => (
-                                                <a href={generatePath(acc_data.name, cat_data.slug, ch_data.name)} className="mx-2  hover:bg-white rounded-lg p-2 hover:shadow-md group/item transition-all duration-200">
+                                                <Link href={generatePath(acc_data.name, cat_data.slug, ch_data.name)} className="mx-2  hover:bg-white rounded-lg p-2 hover:shadow-md group/item transition-all duration-200">
                                                     <Image className=" mx-auto group-hover/item:scale-110 transition scale-100 duration-200 ease-in-out h-[50px] w-[50px]" src={LoadImages(ch_data.images)} height={50} width={50} alt={ch_data.name} />
                                                     <p className="xl:mx-3 xl:my-auto mt-3  ml-0 text-center text-[11px] my-auto ">{ch_data.name}</p>
-                                                </a>
+                                                </Link>
                                             ))}</div>
                                         </Disclosure.Panel>
                                     </Disclosure.Button>
