@@ -42,7 +42,7 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
 
     const [selectedFilter, setFilter] = useState(filters[0])
     const { locale } = useLanguage();
-    const productsData = categoryData.products
+    var productsData = categoryData.products
     const [data, setData] = useState(productsData)
 
     function slugify(text: string) {
@@ -106,6 +106,7 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
         }
 
         setProductsFilterApplied(true);
+        debugger
         fetchData(typeGenerate(menuData[0]), 0, false, (type === "order_by" ? `&${type}=${value}` : "") + (type === "brands" && brandsSelected.length > 0 ? `&${type}=${value}` : ""))
     }
 
@@ -114,7 +115,8 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
             getProductsDataByCat(filterPath + filterPaths, noOfProducts, true, locale).then(
                 (proData: any) => {
                     if (loadMoreData) {
-                        setData([...data, ...proData.data.products])
+                        debugger
+                        productsData = [...productsData, proData.data.products]
                         setAnimateSpin(false)
                         setShowMoreProductsbtn(false)
                     }
@@ -129,7 +131,9 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
             getProductsDataByCat(filterPath + filterPaths, noOfProducts, false, locale).then(
                 (proData: any) => {
                     if (loadMoreData) {
-                        setData([...data, ...proData.data.products])
+                        debugger
+
+                        productsData = [productsData, proData.data.products]
                         setAnimateSpin(false)
                         setShowMoreProductsbtn(false)
                     }
@@ -310,7 +314,7 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
                         : null}
                     <div className={`${isSearchPage ? ' col-span-full' : "col-span-3"}`}>
                         <div className={`grid ${isRowView ? "!grid-cols-1 !gap-0" : ""} ${isSearchPage ? "xl:grid-cols-6 md:grid-cols-4 sm:grid-cols-3 " : "  md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1"}  xs:grid-cols-2 grid-cols-1 sm:gap-3 gap-1`}>
-                            {data.length > 0 ? data.map((pro_data: any) => (
+                            {productsData.length > 0 ? productsData.map((pro_data: any) => (
                                 productFilterApplied ?
                                     skeletonArray.map(sk =>
                                         sk
