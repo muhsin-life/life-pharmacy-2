@@ -106,7 +106,6 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
         }
 
         setProductsFilterApplied(true);
-        debugger
         fetchData(typeGenerate(menuData[0]), 0, false, (type === "order_by" ? `&${type}=${value}` : "") + (type === "brands" && brandsSelected.length > 0 ? `&${type}=${value}` : ""))
     }
 

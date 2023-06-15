@@ -3,7 +3,7 @@ import getCategoryData from "@/lib/getCategoryData"
 import getProductsDataByCat from "@/lib/getProductsDataByCat"
 
 const MainCategory = ({ params, categoryData, filterPath, selectedBrands }: { params: any, categoryData: any, filterPath: any, selectedBrands: string }) => {
-    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={categoryData} menuData={["Category", String(params.category).replace(/-/g, ' ')]} selectedBrands={selectedBrands} />
+    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={categoryData} menuData={[String(params.category).replace(/-/g, ' ')]} selectedBrands={selectedBrands} type={"category"}/>
 }
 
 export default MainCategory

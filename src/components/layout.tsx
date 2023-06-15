@@ -39,7 +39,7 @@ export const Layout: FC<layoutProps> = ({ children, data, brands_data, isArabic,
         pauseOnHover={false}
         theme="colored"
       />
-      <section onMouseDown={(e) => { searchButtonOnLeave(e) }}>
+      <section className="py-0" onMouseDown={(e) => { searchButtonOnLeave(e) }}>
         <Navbar data={data} brands_data={brands_data} isArabic={isArabic} lang={lang} langData={langData}  />
         <main>{children}</main>
         <Footer langData={langData} />

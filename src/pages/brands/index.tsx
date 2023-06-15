@@ -22,7 +22,7 @@ export default function BrandsPage({ brandsData, alphaBrands }: { brandsData: an
                     <h1 className='text-2xl  text-center   capitalize text-blue-500'>All Available Brands</h1>
                 </div>
             </div>
-            <BreadCrumb menuData={["Brands", ""]} />
+            <BreadCrumb menuData={["Brands", ""]} type={"brands"}/>
 
             <div className=" grid xl:grid-cols-5 sm:grid-cols-4 grid-cols-3  gap-3  mx-auto" id="brands-section">
                 {brandsData.map((bd: any) => (

@@ -75,7 +75,7 @@ const SingleProductsContent = ({ pro_data, relatedProductsData }: { pro_data: an
     return (
         <>
             <div className="max-w-[1450px] mx-auto  sm:px-[10px] px-[5px]  md:text-sm sm:text-xs md:bg-white bg-slate-50  ">
-                <BreadCrumb menuData={["Products", pro_data.title]} />
+                <BreadCrumb menuData={["Products", pro_data.title]} type={"products"}/>
                 <div>
                     <div className="mx-auto  grid grid-cols-12 gap-x-5 my-5 ">
                         {pro_data && domLoaded ?

@@ -4,7 +4,7 @@ import getProductsDataByCat from "@/lib/getProductsDataByCat";
 
 const Products = ({ productsData, cat, filterPath, selectedBrands }: { productsData: any, cat: any, filterPath: string, selectedBrands: string }) => {
 
-    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={productsData} menuData={["Products", String(cat).replace(/-/g, ' ')]} selectedBrands={selectedBrands} />
+    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={productsData} menuData={["Products", String(cat).replace(/-/g, ' ')]} type={"products"} selectedBrands={selectedBrands} />
 }
 
 export default Products

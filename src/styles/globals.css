@@ -373,7 +373,6 @@ li{
 }
 
 
-
 .label-circle {
     display: flex;
     align-items: center;
@@ -385,9 +384,6 @@ li{
     font-weight: 400;
 
 }
-
-
-
 
 h4{
     @apply lg:text-lg md:text-base text-sm pb-4
@@ -402,7 +398,6 @@ h4{
 section{
     @apply py-4
 }
-
 
 
 
