@@ -23,7 +23,7 @@ export default function CategoryMenu({ categoryMenuParams, catData, menuData = [
                 </div>
             </div>
             <div className="md:block hidden">
-                <BreadCrumb menuData={menuData} />
+                <BreadCrumb menuData={menuData} type="category-menu"/>
             </div>
 
             <div className="grid grid-cols-12  gap-y-5 gap-x-6">
