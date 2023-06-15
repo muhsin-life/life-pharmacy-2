@@ -8,7 +8,7 @@ const BreadCrumb = ({ menuData, type }: { menuData: any, type:string }) => {
             generatedUrl += slugify(itemName) + "/"
         }
         )
-        if(type==="category"){
+        if(type==="category" || type==="category-menu"){
             return `/${type}${generatedUrl}`
         }
         else{
