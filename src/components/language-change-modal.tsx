@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { CheckCircleIcon, CheckIcon, ChevronLeftIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import TransitionComp from './transition'
 import { useRouter } from 'next/router'
+import { toast } from 'react-toastify';
 
 interface compProps {
     setModalState: any
@@ -13,10 +14,9 @@ interface compProps {
     countries: any
     languages: any
     lang: any
-    languageClickedToast: any
 }
 
-const LanguageChangeModal: FC<compProps> = ({ setModalState, modalState, currentLanguage, currentCountry, countries, languages, lang, languageClickedToast }) => {
+const LanguageChangeModal: FC<compProps> = ({ setModalState, modalState, currentLanguage, currentCountry, countries, languages, lang }) => {
     const router = useRouter()
     const [IsLanguageChangeClicked, languageChangeClicked] = useState(false)
     const [IsCountryChangeClicked, CountryChangeClicked] = useState(true)
@@ -30,7 +30,8 @@ const LanguageChangeModal: FC<compProps> = ({ setModalState, modalState, current
     function languageOnClicked(path: any) {
         closeModal()
         router.push('', router.asPath, { locale: `${selectedCountryPath}-${path}` })
-        languageClickedToast()
+        toast.info("Language & Country changed successfully")
+
     }
 
     const countryProps = <div className='space-y-2'>

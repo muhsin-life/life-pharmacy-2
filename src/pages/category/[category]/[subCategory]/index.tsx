@@ -3,12 +3,20 @@ import getCategoryData from "@/lib/getCategoryData"
 import getProductsDataByCat from "@/lib/getProductsDataByCat"
 
 const SubCategory = ({ params, categoryData, filterPath, selectedBrands }: { params: any, categoryData: any, filterPath: any, selectedBrands: string }) => {
-    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={categoryData} menuData={["Category", String(params.subCategory).replace(/-/g, ' ')]} selectedBrands={selectedBrands} />
+
+    const getMenuData = (catDataArray: string[]) => {
+        catDataArray.forEach((cat, index) => {
+            catDataArray[index] = cat.replaceAll('-', ' ');
+        });
+        return catDataArray;
+    }
+
+    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={categoryData} menuData={getMenuData([params.category, params.subCategory])} selectedBrands={selectedBrands} />
 }
 
 export default SubCategory
 
-export async function getStaticProps({ locale, params }: { locale: any, params: any}) {
+export async function getStaticProps({ locale, params }: { locale: any, params: any }) {
     const subCategory = params.subCategory
     let filterPath = `categories=${subCategory}`
 

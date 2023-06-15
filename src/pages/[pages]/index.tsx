@@ -9,9 +9,7 @@ const PageData = ({ pageData, locale }: { pageData: any, locale: any }) => {
         <div className="max-w-[1450px] px-[10px] mx-auto">
 
             {pageData.map((data: any, ind: number) => (
-                <PageStructure data={data} lang={locale} >
-                    <Products lang={locale} slug={data.section_data_object?.slug} type_key={data.section_data_object?.type_key} />
-                </PageStructure >
+                <PageStructure data={data} lang={locale} />
             ))}
         </div>
     )
@@ -50,13 +48,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const pagesParams = context.params?.pages;
     const pageData = await getSinglePageData(pagesParams)
     const locale = context.locale
-    
+
     if (!pageData.success) {
         return {
             notFound: true
         }
     }
-    
+
     return {
         props: {
             pageData: pageData.data.content,

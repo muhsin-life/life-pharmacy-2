@@ -3,7 +3,13 @@ import getCategoryData from "@/lib/getCategoryData"
 import getProductsDataByCat from "@/lib/getProductsDataByCat"
 
 const ChildCategory = ({ params, categoryData, filterPath, selectedBrands }: { params: any, categoryData: any, filterPath: any, selectedBrands: string }) => {
-    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={categoryData} menuData={["Category", String(params.childCategory).replace(/-/g, ' ')]} selectedBrands={selectedBrands} />
+    const getMenuData = (catDataArray: string[]) => {
+        catDataArray.forEach((cat, index) => {
+            catDataArray[index] = cat.replaceAll('-', ' ');
+        });
+        return catDataArray;
+    }
+    return <ProductsPage filterPath={filterPath} isSearchPage={false} categoryData={categoryData} menuData={getMenuData([params.category, params.subCategory, params.childCategory])} selectedBrands={selectedBrands} />
 }
 
 export default ChildCategory

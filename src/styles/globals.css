@@ -28,7 +28,6 @@ html {
 
 .underline-tra {
     position: relative;
-    display: inline-block;
 }
 
 .underline-tra::after {
@@ -242,7 +241,7 @@ input:focus {
 
 
 .swiper-pagination-bullet-active {
-    @apply !w-4 !h-2 !rounded-lg !bg-gray-400
+    @apply !w-4 !h-2 !rounded-lg !bg-gray-400 
 }
 
 /* .slides-per-view-2 {
@@ -390,9 +389,19 @@ li{
 
 
 
+h4{
+    @apply lg:text-lg md:text-base text-sm pb-4
+}
 
-
-
+.ol-footer ul{
+@apply list-[circle]
+}
+.ol-footer ul li{
+    @apply py-2
+    }
+section{
+    @apply py-4
+}
 
 
 

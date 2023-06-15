@@ -155,11 +155,11 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
         setNoOfProducts(c => c + 40)
     }
     return (
-        <div className='py-5 max-w-[1450px] mx-auto  sm:px-[10px] px-[5px]'>
+        <div className=' max-w-[1450px] mx-auto  sm:px-[10px] px-[5px]'>
             {!isSearchPage ?
-                <div className="flex justify-between  py-5 border-t border-muted">
-                    <div>
-                        <p className="sm:text-sm text-xs">Showing <span className="text-black">{categoryData.total_count}</span> of <span className="text-black ">{noOfProducts}</span> Products</p>
+                <div className="flex justify-between">
+                    <div className="h-fit my-auto">
+                        <p className="sm:text-sm text-xs">Showing <span className="text-black">{noOfProducts}</span> of <span className="text-black ">{categoryData.total_count}</span> Products</p>
                     </div>
                     <div className=" items-center md:flex hidden">
                         <div className="relative inline-block text-left group/sort-menu">

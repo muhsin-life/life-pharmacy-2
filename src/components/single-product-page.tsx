@@ -11,7 +11,10 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { input } from "@material-tailwind/react";
 import ContentLoader from "react-content-loader";
-const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
+import ProductsSlider from "./products-slider";
+import { useRouter } from "next/router";
+import BreadCrumb from "./breadcrumb";
+const SingleProductsContent = ({ pro_data, relatedProductsData }: { pro_data: any, relatedProductsData: any }) => {
 
     const [selectedImg, setSelectedImg] = useState(0);
     const [noOfProducts, setNoOfProducts] = useState(1);
@@ -22,6 +25,9 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
     const { data: session } = useSession()
     const [domLoaded, setDomLoaded] = useState(false)
     const [wishListItem, setWishlistedItem] = useState(false)
+    const { currency } = useLanguage()
+    const router = useRouter()
+
     useEffect(() => {
         setDomLoaded(true)
         setFeaturedImage(pro_data.images.featured_image);
@@ -68,10 +74,10 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
 
     return (
         <>
-            <div className="max-w-[1450px] mx-auto  sm:px-[10px] px-[5px]  md:text-sm sm:text-xs md:bg-white bg-slate-50 py-5 ">
-
+            <div className="max-w-[1450px] mx-auto  sm:px-[10px] px-[5px]  md:text-sm sm:text-xs md:bg-white bg-slate-50  ">
+                <BreadCrumb menuData={["Products", pro_data.title]} />
                 <div>
-                    <div className="mx-auto  grid grid-cols-12 gap-x-5 my-5">
+                    <div className="mx-auto  grid grid-cols-12 gap-x-5 my-5 ">
                         {pro_data && domLoaded ?
                             <>
                                 <div className="flex md:col-span-4 min-[570px]:col-span-6 col-span-full border-2 border-muted rounded-lg shadow-md p-2 h-fit lg:flex-row md:flex-col-reverse">
@@ -102,7 +108,7 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                                         </div>
                                         {pro_data.offers && pro_data.offers.value ?
                                             <div className="absolute right-3 top-3 bg-[#00b929] rounded-lg text-white md:text-sm text-xs  px-2 py-1 shadow-lg text-center ">~ {parseFloat(pro_data.offers.value).toFixed(0)}% OFF</div> : null}
-                                        {pro_data.label ? <div style={{ background: pro_data.label.color_code }} className={`skeleton-box flex absolute left-2 top-2 w-fit text-white px-3 items-center rounded-tl-lg rounded-br-2xl text-[9px] sm:py-1 py-[2px] sm:text-xs h-fit`}>{pro_data.label.label_text}</div> : null}
+                                        {pro_data.label ? <div style={{ background: pro_data.label.color_code }} className={`skeleton-box flex absolute left-0 top-0 w-fit text-white px-3 items-center rounded-tl-lg rounded-br-2xl text-[9px] sm:py-1 py-[2px] sm:text-xs h-fit`}>{pro_data.label.label_text}</div> : null}
                                         <div className="absolute right-3 bottom-2 space-y-5">
                                             {wishListItem ?
                                                 <svg onClick={() => setWishlistedItem(false)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="w-6 h-6 fill-blue-950" viewBox="0 0 16 16">
@@ -131,17 +137,29 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                                         <span className="text-gray-600 ml-3">{pro_data.rating}</span>
                                     </div>
                                     {pro_data.categories ?
-                                        <div className=" py-2 ">
+                                        <div className=" pt-2 ">
                                             {pro_data.categories.map((cat_data: any) => (
-                                                <Link href={`/products?categories=${cat_data.slug}`} className=" inline-flex mr-3 hover:text-white hover:bg-red-500 text-red-500  px-2 text-[10px] py-0.4 border border-red-500 rounded-md my-1">{cat_data.name}</Link>
+                                                <Link href={`/products?categories=${cat_data.slug}`} className=" inline-flex mr-3 hover:text-white hover:bg-red-600 text-red-600  px-2 text-[10px] py-0.4 border border-red-600 rounded-md my-1 transition-colors duration-200">{cat_data.name}</Link>
                                             ))}
                                         </div>
                                         : null}
-                                    <div className="relative md:block hidden">
-                                        <div className={` text-gray-500 md:text-sm sm:text-sm text-xs ${readMorClick ? "from-white to-gray-200 h-[10rem] overflow-y-auto" : " overflow-y-hidden h-24 bg-gradient-to-b "}`} dangerouslySetInnerHTML={{ __html: pro_data.short_description }} />
-                                        {readMorClick ?
+                                    <div className="flex justify-between py-2">
+                                        <div className="flex space-x-1">
+                                            <small>Brand: </small>
+                                            <Link href={`/${pro_data.brand.brand_url}`}>
+                                                <small className="text-primary hover:text-blue-700 transition-colors duration-200">{pro_data.brand.name}</small>
+                                            </Link>
+                                        </div>
+                                        <div className="flex space-x-1">
+                                            <small>SKU: </small>
+                                            <small className="text-life ">{pro_data.sku}</small>
+                                        </div>
+                                    </div>
+                                    <div className="relative md:block hidden mb-10">
+                                        <div className={` text-gray-500 md:text-sm sm:text-sm text-xs h-[8rem]  ${readMorClick ? "from-white to-gray-200 overflow-y-auto" : " overflow-y-hidden bg-gradient-to-b "}`} dangerouslySetInnerHTML={{ __html: pro_data.short_description }} />
+                                        {readMorClick === false ?
                                             <div className={`absolute -bottom-6 left-0 right-0 text-center ${readMorClick ? '' : 'bg-gradient-to-b from-transparent to-white'} pt-16`}>
-                                                <button onClick={() => setReadMoreCLick(false)} className=' rounded-full text-sm    text-primary hover:text-blue-500 p-1 px-2'>Read More</button>
+                                                <button onClick={() => setReadMoreCLick(true)} className=' rounded-full text-sm    text-primary hover:text-blue-500 p-1 px-2'>Read More</button>
                                             </div>
                                             : null}
                                     </div>
@@ -151,15 +169,15 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                                                 {pro_data.prices ? pro_data.prices[0].price.offer_price != pro_data.prices[0].price.regular_price ?
                                                     <div className="flex justify-between">
                                                         <div className="text-red-500 mr-3">
-                                                            <span className="text-[8px] lg:text-xs">AED </span>
+                                                            <span className="text-[8px] lg:text-xs">{currency} </span>
                                                             <span className="font-semibold text-2xl">{pro_data.sale_price}</span>
                                                         </div>
                                                         <div className="text-life text-xs my-auto">
-                                                            <span ><del>AED {parseFloat(pro_data.filter_price).toFixed(2)}</del></span>
+                                                            <span ><del>{currency} {parseFloat(pro_data.filter_price).toFixed(2)}</del></span>
                                                         </div>
                                                     </div> :
                                                     <div className='text-blue-400' >
-                                                        <span className="md:text-sm text-xs ">AED</span> <span className="lg:text-lg sm:text-base text-sm ">{pro_data.prices ? parseFloat(pro_data.prices[0].price.regular_price).toFixed(2) : null}</span>
+                                                        <span className="md:text-sm text-xs ">{currency}</span> <span className="lg:text-lg sm:text-base text-sm ">{pro_data.prices ? parseFloat(pro_data.prices[0].price.regular_price).toFixed(2) : null}</span>
                                                     </div> : null}
 
                                             </div>
@@ -174,12 +192,12 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                                                     <FaMinus className="text-sky-600 h-[10px] " />
                                                 </button>
                                                 <input type="text" value={cartValue} min="1" max="20" className=" rounded rounded-r-none bg-slate-100 w-10 border-none text-center text-sm text-gray-500 " />
-                                                <button className="border  bg-sky-500 text-white px-3 rounded-lg ">
+                                                <button className="border  bg-sky-500 hover:bg-sky-600 transition-colors duration-300 text-white px-3 rounded-lg ">
                                                     <FaPlus className="h-[10px]" onClick={() => setCartValue(value => value + 1)} />
                                                 </button>
                                             </div>
 
-                                            <button className="  text-white bg-sky-500 border-0 py-2 px-4 focus:outline-none hover:bg-indigo-600 rounded w-full lg:text-base md:text-xs text-[10px] whitespace-nowrap">
+                                            <button className="  text-white bg-sky-500 hover:bg-sky-600 transition-colors duration-300 border-0 py-2 px-4 focus:outline-none  rounded w-full lg:text-base md:text-xs text-[10px] whitespace-nowrap">
                                                 <svg className="inline-block w-5 h-5 my-auto fill-white mr-2" fill="#000000" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M 4 7 C 3.449219 7 3 7.449219 3 8 C 3 8.550781 3.449219 9 4 9 L 6.21875 9 L 8.84375 19.5 C 9.066406 20.390625 9.863281 21 10.78125 21 L 23.25 21 C 24.152344 21 24.917969 20.402344 25.15625 19.53125 L 27.75 10 L 25.65625 10 L 23.25 19 L 10.78125 19 L 8.15625 8.5 C 7.933594 7.609375 7.136719 7 6.21875 7 Z M 22 21 C 20.355469 21 19 22.355469 19 24 C 19 25.644531 20.355469 27 22 27 C 23.644531 27 25 25.644531 25 24 C 25 22.355469 23.644531 21 22 21 Z M 13 21 C 11.355469 21 10 22.355469 10 24 C 10 25.644531 11.355469 27 13 27 C 14.644531 27 16 25.644531 16 24 C 16 22.355469 14.644531 21 13 21 Z M 16 7 L 16 10 L 13 10 L 13 12 L 16 12 L 16 15 L 18 15 L 18 12 L 21 12 L 21 10 L 18 10 L 18 7 Z M 13 23 C 13.5625 23 14 23.4375 14 24 C 14 24.5625 13.5625 25 13 25 C 12.4375 25 12 24.5625 12 24 C 12 23.4375 12.4375 23 13 23 Z M 22 23 C 22.5625 23 23 23.4375 23 24 C 23 24.5625 22.5625 25 22 25 C 21.4375 25 21 24.5625 21 24 C 21 23.4375 21.4375 23 22 23 Z"></path></g></svg>
                                                 Add to Cart
                                             </button>
@@ -234,26 +252,26 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
 
 
                         }
-                        <ul className="md:flex hidden col-span-3  flex-col ml-auto justify-around  py-4 px-3  border border-gray-200 rounded-lg h-fit space-y-12">
+                        <ul className="md:flex hidden col-span-3  flex-col ml-auto justify-around  py-4 px-3  border border-gray-200 rounded-lg h-fit space-y-12 w-full">
                             <li className="flex    w-[9rem]">
                                 <Image src={"https://www.lifepharmacy.com/images/svg/ecommerce-gift.svg"} height={25} width={25} alt="free delivery" />
                                 <div className="flex flex-col ml-4">
-                                    <h5 className="text-indigo-900 lg:text-sm text-[12px] font-semibold whitespace-nowrap">Free Delivery</h5>
-                                    <div className="text-[10px] whitespace-nowrap text-gray-400 lg:text-xs">For all orders over AED 29</div>
+                                    <h5 className="text-life lg:text-xs text-[12px] font-semibold whitespace-nowrap">Free Delivery</h5>
+                                    <div className="text-[10px] whitespace-nowrap text-gray-400 lg:text-xs my-1">For all orders over AED 29</div>
                                 </div>
                             </li>
                             <li className="flex  ">
                                 <Image src={"https://www.lifepharmacy.com/images/svg/ecommerce-return.svg"} height={25} width={25} alt="free delivery" />
                                 <div className="flex flex-col ml-4">
-                                    <h5 className="text-indigo-900 lg:text-sm text-[12px] font-semibold whitespace-nowrap">Easy Return</h5>
-                                    <div className="text-[10px] whitespace-nowrap lg:text-xs text-gray-400">Easy return and refund</div>
+                                    <h5 className="text-life lg:text-xs text-[12px] font-semibold whitespace-nowrap">Easy Return</h5>
+                                    <div className="text-[10px] whitespace-nowrap lg:text-xs text-gray-400 my-1">Easy return and refund</div>
                                 </div>
                             </li>
                             <li className="flex   ">
                                 <Image src={"https://www.lifepharmacy.com/images/svg/ecommerce-shield.svg"} height={25} width={25} alt="free delivery" />
                                 <div className="flex flex-col ml-4">
-                                    <h5 className="text-indigo-900 lg:text-sm text-[12px] font-semibold whitespace-nowrap">Secure Payments</h5>
-                                    <div className="">
+                                    <h5 className="text-life lg:text-xs text-[12px] font-semibold whitespace-nowrap">Secure Payments</h5>
+                                    <div className="my-1">
                                         <Image src={"https://www.lifepharmacy.com/images/payment-method.svg"} height={200} width={200} alt="free delivery" />
                                     </div>
                                 </div>
@@ -261,8 +279,8 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                             <li className="flex   ">
                                 <Image src={"https://www.lifepharmacy.com/images/svg/ecommerce-phone.svg"} height={25} width={25} alt="free delivery" />
                                 <div className="flex flex-col ml-4">
-                                    <h5 className="text-indigo-900 lg:text-sm text-[12px] font-semibold whitespace-nowrap">24/7 Support</h5>
-                                    <div className="lg:text-xs text-gray-400 text-[10px] whitespace-nowrap">Dedicated Support</div>
+                                    <h5 className="text-life lg:text-xs text-[12px] font-semibold whitespace-nowrap">24/7 Support</h5>
+                                    <div className="lg:text-xs text-gray-400 text-[10px] whitespace-nowrap my-1">Dedicated Support</div>
                                 </div>
                             </li>
                         </ul>
@@ -276,19 +294,19 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                             <img src="https://lifeadmin-app.s3.me-south-1.amazonaws.com/mobile-app/homescreen/Product%20page%20banner/ppb-2.gif" className="w-full" />
                         </div>
                     </div>
-                    <div className="py-4 px-2">
+                    <div className="py-6 px-2 border-b border-muted">
                         <h5 className="text-life-2 md:text-xl text-base font-semibold mb-2">Overview</h5>
                         <div dangerouslySetInnerHTML={{ __html: pro_data.short_description }} className="text-gray-500 px-3 md:text-sm text-xs leading-relaxed " />
                     </div>
-                    <div className="py-4 px-2">
+                    <div className="py-6 px-2 border-b border-muted">
                         <h5 className="text-life-2  md:text-xl text-base font-semibold mb-2 details-sec">Details</h5>
                         <div dangerouslySetInnerHTML={{ __html: pro_data.description }} className="text-gray-500 px-3 md:text-sm text-xs leading-relaxed " />
                     </div>
-                    <div className="py-4 px-2">
+                    <div className="py-6 px-2 border-b border-muted">
                         <h5 className="text-life-2 md:text-xl text-base font-semibold mb-2">More Info</h5>
                         <div className="text-gray-500 text-xs">SKU: {pro_data.sku}</div>
                     </div>
-                    <div className="lg:flex justify-around my-5">
+                    <div className="lg:flex justify-around my-5 border-b border-muted py-6">
                         <div className="lg:w-3/12 w-full lg:px-0 px-6">
                             <div className="text-center">
                                 <h3 className="text-blue-500 font-semibold md:text-2xl text-xl p-2">Product Rating</h3>
@@ -344,105 +362,107 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
                             </div>
                         </div>
 
-                        <div className="lg:w-7/12 w-full py-3  px-2">
+                        <div className="lg:w-7/12 w-full py-3  px-2 ">
                             <h3 className="font-semibold md:text-lg text-base ">Reviews (5 of 36)</h3>
-                            <div className="flex justify-start py-4 border-b border-muted ">
-                                <div className="w-1/4">
-                                    <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
-                                    <div className="w-1/2 flex justify-start py-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
+                            <div className="divide-y">
+                                <div className="flex justify-start py-4  ">
+                                    <div className="w-1/4">
+                                        <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
+                                        <div className="w-1/2 flex justify-start py-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
+                                        <div className=" text-[10px] my-2"><i>No comment</i></div>
                                     </div>
-                                    <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
-                                    <div className=" text-[10px] my-2"><i>No comment</i></div>
                                 </div>
-                            </div>
-                            <div className="flex justify-start py-4 border-b border-muted">
-                                <div className="w-1/4">
-                                    <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
-                                    <div className="w-1/2 flex justify-start py-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
+                                <div className="flex justify-start py-4 ">
+                                    <div className="w-1/4">
+                                        <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
+                                        <div className="w-1/2 flex justify-start py-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
+                                        <div className=" text-[10px] my-2"><i>No comment</i></div>
                                     </div>
-                                    <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
-                                    <div className=" text-[10px] my-2"><i>No comment</i></div>
                                 </div>
-                            </div>
 
-                            <div className="flex justify-start py-4 border-b border-muted">
-                                <div className="w-1/4">
-                                    <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
-                                    <div className="w-1/2 flex justify-start py-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
+                                <div className="flex justify-start py-4 ">
+                                    <div className="w-1/4">
+                                        <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
+                                        <div className="w-1/2 flex justify-start py-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
+                                        <div className=" text-[10px] my-2"><i>No comment</i></div>
+
                                     </div>
-                                    <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
-                                    <div className=" text-[10px] my-2"><i>No comment</i></div>
-
                                 </div>
-                            </div>
-                            <div className="flex justify-start py-4 border-b border-muted">
-                                <div className="w-1/4">
-                                    <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
-                                    <div className="w-1/2 flex justify-start py-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
-                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                    <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
-                                    <div className=" text-[10px] my-2"><i>No comment</i></div>
+                                <div className="flex justify-start py-4 ">
+                                    <div className="w-1/4">
+                                        <h5 className="text-xs md:text-sm">Jaspreet singh</h5>
+                                        <div className="w-1/2 flex justify-start py-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="orange" className="w-3 h-3">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <div className="text-gray-400 sm:text-sm text-xs">Feb 21,2023</div>
+                                        <div className=" text-[10px] my-2"><i>No comment</i></div>
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -450,8 +470,16 @@ const SingleProductsContent = ({ pro_data }: { pro_data: any }) => {
 
                 </div>
 
+
+
+                <h3 className="md:text-2xl sm:text-lg text-base font-bold text-center">Related Products</h3>
+
+                {relatedProductsData ?
+                    <ProductsSlider proData={relatedProductsData} /> :
+                    null}
+
                 <AddtoCartMobileview salePrice={pro_data.sale_price} filterPrice={pro_data.filter_price} />
-            </div>
+            </div >
         </>
     )
 }

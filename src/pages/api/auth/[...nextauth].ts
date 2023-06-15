@@ -52,30 +52,20 @@ export default NextAuth({
 
   callbacks: {
 
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   return true
-    // },
 
     async jwt({ user, token }: { user: any, token: any }) {
 
       // token.userRole = "regusr"
       // token = user
-      // console.log(token);
       if (user) {
         token = user.data.user
         token.token = user.data.token
       }
-
-      // console.log(token)
       return token
     },
     async session({ session, token }) {
 
       session.token = token
-      // console.log(session);
-
-      // console.log(session);
-
       // session.token = {}
       return session;
     },

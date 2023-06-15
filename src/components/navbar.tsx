@@ -38,11 +38,10 @@ interface navbarProps {
   brands_data: any,
   isArabic: boolean,
   langData: any,
-  languageClickedToast: any
   lang: string
 }
 
-const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, languageClickedToast, lang }) => {
+const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }) => {
 
   const countries = [
     { country: 'United Arab Emirates', flag: 'https://www.lifepharmacy.com/images/svg/flag-ae.svg', path: "ae" },
@@ -118,6 +117,9 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, langua
     setChooseLanguage(false);
   }
 
+  function slugify(text: string) {
+    return text.toLowerCase().replace(/[\s&]+/g, '-');
+  }
 
   function searchSuggestions(searchData: string, isMobile: boolean, type: string) {
     if (isMobile) {
@@ -650,7 +652,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, langua
                 <div className="text-[11px] text-center text-white" >{langData.navbar.cart}</div>
 
                 {domLoaded && cartItems && cartItems.length > 0 ?
-                  <div className="group-hover/cart:scale-100  scale-0 absolute w-[25rem] top-[3rem] right-0 bg-white rounded-lg px-3 py-2  h-fit  shadow-lg">
+                  <div className="group-hover/cart:scale-100  scale-0 absolute w-[25rem] top-[3rem] right-0 bg-white rounded-lg px-3 py-2  h-fit  shadow-lg z-30">
                     <div className="overflow-y-auto h-fit max-h-[20rem] px-2">
                       {cartItems.map((item: any) => (
                         <>
@@ -693,199 +695,176 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, langua
             </div>
           </div>
           <div className="bg-[#a92579] items-center">
-            <div className=" flex justify-between py-1 max-w-[1450px] mx-auto  sm:px-[10px] px-[5px] text-white lg:flex md:flex hidden  text-xs " >
-              <div className={"flex justify-start  space-x-3 "}>
-                <div className={`${isArabic ? 'ml-2' : 'mr-2'} my-auto`}>
-                  <span className="">{langData.navbar.highest_rated_phar}</span>
+            <div className="  justify-between py-1 max-w-[1450px] mx-auto  sm:px-[10px] px-[5px] text-white lg:flex md:flex hidden md:text-sm text-xs " >
+              <Link href={"https://life.go.link/super-summer-savers?adj_t=p06ftxm&adj_campaign=website_popup&adj_fallback=https%3A%2F%2Fwww.lifepharmacy.com%2Fsuper-summer-savers&adj_redirect=https%3A%2F%2Fwww.lifepharmacy.com%2Fsuper-summer-savers"} className={"flex justify-start  space-x-3 "}>
+                <div className={` my-auto`}>
+                  <span className="">{langData.navbar.highest_rated_phar} <span className="font-semibold ml-2">|</span> </span>
                 </div>
-                <Image src={"https://www.lifepharmacy.com/images/app-rating.svg"} className="w-20 h-5" height={30} width={30} alt={"app-rating"} /></div>
-
+                <Image src={"https://www.lifepharmacy.com/images/app-rating.svg"} className="w-20 h-5 my-auto" height={30} width={30} alt={"app-rating"} />
+                <div className="flex items-center">
+                  <span className="font-semibold mr-1">|</span>
+                  <span>Download Now</span>
+                </div>
+              </Link>
               <div className="text-end flex justify-between items-center ">
-                <div className="mx-4">{langData.navbar.deliver_to}  {session?.token?.addresses && session?.token?.addresses.length != 0 ? (displayedAddress(AddressDataIndex)) : "Select a Location"}</div>
+                <div className="mx-4">{langData.navbar.deliver_to}  {session?.token?.addresses && session?.token?.addresses.length != 0 ? (displayedAddress(AddressDataIndex)) : "Dubai, United Arab Emirates"}</div>
                 <button
-                  className="bg-white text-black rounded px-3   font-bold py-1" onClick={() => { locationOnClickHandle() }}>CHANGE</button>
+                  className="bg-white text-life-2 text-xs rounded px-2   font-bold py-1 flex items-center text-life" onClick={() => { locationOnClickHandle() }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="w-4 h-3 mr-1" viewBox="0 0 16 16">
+                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                  </svg>
+                  <span>CHANGE</span>  </button>
               </div>
             </div>
           </div>
+          <div className="w-full bg-white shadow-md">
+            <div className=" grid-cols-3 gap-4  hidden lg:grid md:grid bg-white  max-w-[1440px]  mx-auto relative">
+              <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat ">
+                <button
+                  onMouseOver={() => shopByCatOnMouseOver()} className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele  border-r border-slate-300 w-[236px] items-center flex"
+                  id="dropdownDefaultButton" data-dropdown-toggle="dropdown">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                    stroke="currentColor" className="w-6 h-6 my-2 float-left ml-3">
+                    <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                  </svg>
+                  <div className="text-start float-left mr-10 text-sm group-1 align-middle flex items-center ml-2">
+                    {langData.navbar.shop_by_cat} </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                    stroke="currentColor" className="h-6 float-right  w-4 mr-2 group-hover:-rotate-180 transition-transform duration-200">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
 
-          <div className="grid grid-cols-3 gap-4  hidden lg:flex md:flex bg-white shadow-md">
-            <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat ">
-              <button
-                onMouseOver={() => shopByCatOnMouseOver()} className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele  border-r border-slate-300 w-[236px] items-center flex"
-                id="dropdownDefaultButton" data-dropdown-toggle="dropdown">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                  stroke="currentColor" className="w-6 h-6 my-2 float-left ml-3">
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-                <div className="text-start float-left mr-10 text-sm group-1 align-middle flex items-center ml-2">
-                  {langData.navbar.shop_by_cat} </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                  stroke="currentColor" className="h-6 float-right  w-4 mr-2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                </svg>
-              </button>
-
-              <div className="flex justify-start absolute bg-white  scale-0 group-hover:scale-100 left-0 right-0">
-                <div className="z-30  bg-white">
-                  <ul className="text-sm text-gray-700  rounded-sm transform scale-0 group-hover:scale-100  
+                <div className="flex justify-start absolute bg-white  scale-0 group-hover:scale-100 left-0 right-0">
+                  <div className="z-30  bg-white">
+                    <ul className="text-sm text-gray-700  rounded-sm transform scale-0 group-hover:scale-100  
               transition duration-100 ease-in-out origin-top bg-white w-[236px] h-full flex flex-wrap border-r-[0.1px] border-slate-300 shadow-md" id="catgories-element">
-                    {data.data.map((item: any, i: number) => (
-                      <li key={item.name} onMouseOver={(e) => { ulListTrigger(e, (item.name + "ele").replace(/\s/g, '')) }} className={" group/btn w-full list" + i}>
-                        <button id={(item.name + "btn").replace(/\s/g, '')} className={`single-btn w-full py-4 transition-all duration-100 ease-in-out group-hover/btn:bg-blue-50 group-hover/btn:border-blue-500 group-hover/btn:text-blue-400 ${isArabic ? 'pr-5 group-hover/btn:border-r-[4px]' : 'pl-5 group-hover/btn:border-l-[4px]'} text-left flex px-2`} >
-                          <span className="flex-1 mx-3 whitespace-nowrap">  {item.name}   </span>
-                          <span className="mr-auto my-auto">
-                            <svg className={`fill-current h-4 w-4  transition duration-150 ease-in-out ${isArabic ? 'rotate-90' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-
-                <div className="bg-white shadow-lg transform scale-0 group-hover:scale-100  
-              z-10 transition duration-150 ease-in-out origin-top text-black  overflow-auto max-h-[28rem]  w-full hello py-4" >
-                  <div className="mx-auto md:w-full xl:w-full mb-5" >
-                    <div className="font-bold lg:text-2xl text-center mb-3" >TOP BRANDS</div>
-
-                    <Swiper
-                      centeredSlides={true}
-                      className="my-6 "
-                      slidesPerView={6}
-                      autoplay={{
-                        delay: 10,
-                        disableOnInteraction: false,
-                      }}
-                      speed={3000}
-                      modules={[Autoplay]}
-                      loop={true}
-                      breakpoints={{
-                        1024: {
-                          width: 1024,
-                          slidesPerView: 7,
-                        },
-                        768: {
-                          width: 768,
-                          slidesPerView: 6
-                        },
-                      }}
-                    >
-
-                      {brands_data.data.brands.map((bd: any) => (
-                        <SwiperSlide className="cursor-grab">
-                          <Link href={`/brand/${bd.slug}`}>
-                            <Image className="mx-auto md:w-16 md:h-16 lg:w-24 lg:h-24 xl:w-24 xl:h-24 rounded-full border border-gray-300 " width={150} height={150} src={bd.images.logo} alt="" />
+                      {data.data.map((item: any, i: number) => (
+                        <li key={item.name} onMouseOver={(e) => { ulListTrigger(e, (item.name + "ele").replace(/\s/g, '')) }} className={" group/btn w-full list" + i}>
+                          <Link href={`/category/${slugify(item.name)}`} id={(item.name + "btn").replace(/\s/g, '')} className={`single-btn w-full py-4 transition-all duration-100 ease-in-out group-hover/btn:bg-blue-50 group-hover/btn:border-blue-500 group-hover/btn:text-blue-400 ${isArabic ? 'pr-5 group-hover/btn:border-r-[4px]' : 'pl-5 group-hover/btn:border-l-[4px]'} text-left flex px-2`} >
+                            <span className="flex-1 mx-3 whitespace-nowrap">  {item.name}   </span>
+                            <span className="mr-auto my-auto">
+                              <svg className={`fill-current h-4 w-4 -rotate-90 transition duration-150 ease-in-out ${isArabic ? 'rotate-90' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                              </svg>
+                            </span>
                           </Link>
-                        </SwiperSlide>
+                        </li>
                       ))}
-                    </Swiper>
-
+                    </ul>
                   </div>
-                  {data.data.map((item: any) => (
-                    <div className="w-full hidden list-elements" id={(item.name + "ele").replace(/\s/g, '')} onMouseOver={() => { (document.getElementById((item.name + "btn").replace(/\s/g, '')) as HTMLElement).classList.add("text-blue-500", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50") }} onMouseLeave={() => { ((document.getElementById((item.name + "btn").replace(/\s/g, '')) as HTMLElement)).classList.remove("text-blue-500", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50") }}>
 
-                      <ul className={"right-0 u-list bg-white rounded-sm top-0 hover-menu  h-[35rem] ul-list-hover w-full " + (item.name + "ele").replace(/\s/g, '')} >
 
-                        <li key={item.name + "elem"} className="">
+                  <div className="bg-white shadow-lg transform scale-0 group-hover:scale-100  
+              z-10 transition duration-150 ease-in-out origin-top text-black  overflow-auto max-h-[28rem]  w-full hello py-4" >
+                    <div className="mx-auto md:w-full xl:w-full mb-5" >
+                      <div className="font-bold lg:text-2xl text-center mb-3" >TOP BRANDS</div>
 
-                          <div className=" mb-9 ">
-                            <div className="flex justify-between  w-full flex-wrap">
-                              <div className="  lg:order-none md:w-full">
-                                <Example acc_data={item} />
+                      <Swiper
+                        centeredSlides={true}
+                        className="my-6 "
+                        slidesPerView={6}
+                        autoplay={{
+                          delay: 10,
+                          disableOnInteraction: false,
+                        }}
+                        speed={3000}
+                        modules={[Autoplay]}
+                        loop={true}
+                        breakpoints={{
+                          1024: {
+                            width: 1024,
+                            slidesPerView: 7,
+                          },
+                          768: {
+                            width: 768,
+                            slidesPerView: 6
+                          },
+                        }}
+                      >
+
+                        {brands_data.data.brands.map((bd: any) => (
+                          <SwiperSlide className="cursor-grab">
+                            <Link href={`/brand/${bd.slug}`}>
+                              <Image className="mx-auto md:w-16 md:h-16 lg:w-24 lg:h-24 xl:w-24 xl:h-24 rounded-full border border-gray-300 " width={150} height={150} src={bd.images.logo} alt="" />
+                            </Link>
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
+
+                    </div>
+                    {data.data.map((item: any) => (
+                      <div className="w-full hidden list-elements" id={(item.name + "ele").replace(/\s/g, '')} onMouseOver={() => { (document.getElementById((item.name + "btn").replace(/\s/g, '')) as HTMLElement).classList.add("text-blue-500", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50") }} onMouseLeave={() => { ((document.getElementById((item.name + "btn").replace(/\s/g, '')) as HTMLElement)).classList.remove("text-blue-500", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50") }}>
+
+                        <ul className={"right-0 u-list bg-white rounded-sm top-0 hover-menu  h-[35rem] ul-list-hover w-full " + (item.name + "ele").replace(/\s/g, '')} >
+
+                          <li key={item.name + "elem"} className="">
+
+                            <div className=" mb-9 ">
+                              <div className="flex justify-between  w-full flex-wrap">
+                                <div className="  lg:order-none md:w-full">
+                                  <Example acc_data={item} />
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  ))}
+                          </li>
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex space-x-6 ">
-              <div className="group inline-block mr-2">
-                <button className="hover:text-blue-500 underline-tra ml-7 py-1" data-dropdown-toggle="dropdown2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                    stroke="currentColor" className="w-6 h-6 my-2 float-left mr-3">
-                    <path strokeLinecap="round" strokeLinejoin="round"
-                      d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                  </svg>
-                  <Link href={"/brands"} className=" text-start mt-2 float-left font-bold uppercase ">{langData.navbar.brands}</Link>
-                </button>
-                <ul
-                  className="bg-white shadow-lg transform scale-0 group-hover:scale-100 absolute 
-                z-10 transition duration-150 ease-in-out origin-top hidden group-hover:flex flex-col  px-5  text-black left-0 right-0 h-fit ">
-                  <li key={"brands-section"} >
-                    <div className="grid grid-cols-5 gap-3  mx-auto" id="brands-section">
-                      {brands_data.data.brands.map((bd: any) => (
-                        <div className="grid-flow-row mb-5"> <div className={`flex flex-col mr-5`}>
-                          <Link href={`/brand/${bd.slug}`}>
-                            <Image className="mx-auto rounded-full border border-white bg-white shadow-md" width={120} height={120} src={bd.images.logo} alt="" />
-                            <h5 className="text-center mt-3">{bd.name}</h5>
-                          </Link>
-                        </div></div>
-                      ))}
-                    </div>
-                    <div className="w-full text-center my-5">
-                      <Link href="/brands" className="text-white px-8 py-2 text-sm mx-auto rounded-full bg-[#39f]">VIEW ALL</Link>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div className="group inline-block mr-2">
-                <button className="hover:text-blue-500 underline-tra py-1 group"
-                  data-dropdown-toggle="dropdown8">
-
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                    stroke="currentColor" className="w-6 h-6 my-2 float-left mr-3">
-                    <path strokeLinecap="round" strokeLinejoin="round"
-                      d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
-                  </svg>
-
-                  <Link href={"/offers"} className=" text-start mt-2 float-left font-bold uppercase">{langData.navbar.offers}</Link>
-                </button>
-                <ul className="py-2 text-sm text-gray-700  border rounded-sm transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top min-w-32 bg-white z-10">
-                  <ul className="py-2 text-sm text-gray-700  " aria-labelledby="dropdownDefaultButton">
-                    <li key="OfferDetails">
-                      <p className="block pr-20 pl-5 py-2 font-bold">Offer Details</p>
-                    </li>
-                    <li key="ClearanceSale">
-                      <a href="#" className="block pr-20 pl-5 py-2 hover:text-blue-400">Clearance
-                        Sale</a>
-                    </li>
-                    <li key="SportsNutrition">
-
-                      <a href="#" className="block pr-20 pl-5 py-2 hover:text-blue-400">Sports
-                        Nutrition</a>
-                    </li>
-                    <li key="PreventiveCare">
-                      <a href="#" className="block pr-20 pl-5 py-2  hover:text-blue-400">Preventive
-                        Care</a>
-                    </li>
-                    <li key="FirstAid">
-                      <a href="#" className="block pr-20 pl-5 py-2 hover:text-blue-400">First
-                        Aid</a>
-                    </li>
-                    <li key="SunshineNutrition">
-                      <a href="#" className="block pr-20 pl-5 py-3 hover:text-blue-400">Sunshine
-                        Nutrition</a>
+              <div className="flex space-x-6 ">
+                <div className="group inline-block mr-2">
+                  <button className="hover:text-blue-500 underline-tra ml-7 py-1 flex" data-dropdown-toggle="dropdown2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                      stroke="currentColor" className="w-6 h-6 my-2 float-left mr-3">
+                      <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                    </svg>
+                    <Link href={"/brands"} className=" text-start mt-2 float-left font-bold uppercase ">{langData.navbar.brands}</Link>
+                  </button>
+                  <ul
+                    className="bg-white shadow-lg transform scale-0 group-hover:scale-100 absolute 
+                z-10 transition duration-150 ease-in-out origin-top hidden group-hover:flex flex-col  px-5  text-black left-0 right-0 h-fit mt-1">
+                    <li key={"brands-section"} >
+                      <div className="grid grid-cols-5 gap-3  mx-auto" id="brands-section">
+                        {brands_data.data.brands.map((bd: any) => (
+                          <div className="grid-flow-row mb-5"> <div className={`flex flex-col mr-5`}>
+                            <Link href={`/brand/${bd.slug}`}>
+                              <Image className="mx-auto rounded-full border border-white bg-white shadow-md" width={120} height={120} src={bd.images.logo} alt="" />
+                              <h5 className="text-center mt-3">{bd.name}</h5>
+                            </Link>
+                          </div></div>
+                        ))}
+                      </div>
+                      <div className="w-full text-center my-5">
+                        <Link href="/brands" className="text-white px-8 py-2 text-sm mx-auto rounded-full bg-[#39f]">VIEW ALL</Link>
+                      </div>
                     </li>
                   </ul>
-                </ul>
+                </div>
+                <div className=" inline-block mr-2">
+                  <button className="hover:text-blue-500 underline-tra py-1 flex">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                      stroke="currentColor" className="w-6 h-6 my-2 mr-3">
+                      <path strokeLinecap="round" strokeLinejoin="round"
+                        d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+                    </svg>
+                    <Link href={"/offers"} className=" text-start mt-2 float-left font-bold uppercase">{langData.navbar.offers}</Link>
+                  </button>
+                </div>
+                <button className="  hover:text-blue-500 underline-tra flex items-center" >
+                  <Link href={"/health_checkup"} className=" text-start float-left uppercase font-bold h-fit whitespace-nowrap ">{langData.navbar.health_packages}</Link>
+                </button>
               </div>
-
-              <button className=" py-1 hover:text-blue-500 underline-tra" data-dropdown-toggle="dropdown4">
-                <Link href={"/health_checkup"} className="mb-1 text-start float-left uppercase font-bold">{langData.navbar.health_packages}</Link>
-              </button>
             </div>
           </div>
         </div>
       </div >
-
 
       <div className="sm:visible md:hidden ">
         <div className="flex  bg-life text-white text-xs px-[10px] py-1 justify-between items-center">
@@ -926,7 +905,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, langua
         setavailableAddresses={setavailableAddresses} showModal={session && addNewAddress ? true : false}
         AddressDataIndex={AddressDataIndex} formDatahandleChange={formDatahandleChange} setAddressDataIndex={setAddressDataIndex} />
 
-      <LanguageChangeModal setModalState={setModalState} modalState={languageModal} currentLanguage={parts[1] === "ar" ? languages[0] : languages[1]} currentCountry={parts[0] === "sa" ? countries[1] : countries[0]} countries={countries} languages={languages} lang={parts} languageClickedToast={() => { languageClickedToast() }} />
+      <LanguageChangeModal setModalState={setModalState} modalState={languageModal} currentLanguage={parts[1] === "ar" ? languages[0] : languages[1]} currentCountry={parts[0] === "sa" ? countries[1] : countries[0]} countries={countries} languages={languages} lang={parts} />
 
       <SmSearchBoxModal showModal={smScreenSearchBox} setCloseModal={setSmScreenSearchBox} isArabic={isArabic} queryData={queryData} setQueryData={setQueryData} searchButtonOnMouseEnter={searchButtonOnMouseEnter} SearchLoadingState={SearchLoadingState} searchData={searchData} searchBoxClear={searchBoxClear} searchSuggestions={searchSuggestions} searchClosebtn={searchClosebtn} />
 

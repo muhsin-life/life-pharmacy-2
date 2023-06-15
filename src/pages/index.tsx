@@ -6,10 +6,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 export default function Home({ homePageData, locale }: { homePageData: any, locale: any }) {
   return (
     homePageData.data.content.map((data: any, ind: number) => (
-      <PageStructure data={data} lang={locale} >
-        <Products lang={locale} slug={data.section_data_object?.slug} type_key={data.section_data_object?.type_key} />
-      </PageStructure>))
-  )
+      <PageStructure data={data} lang={locale} />
+    )))
 }
 
 export async function getStaticProps({ locale }: { locale: any }) {

@@ -2,6 +2,7 @@ import * as Accordion from '@radix-ui/react-accordion';
 import React, { forwardRef, Ref } from "react"
 import classNames from 'classnames';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
+import Link from 'next/link'
 
 export const AccordionItem = forwardRef<HTMLDivElement, { children: any, className: any, value: any }>(({ children, className, value, ...props }, forwardedRef) => (
     <Accordion.Item
