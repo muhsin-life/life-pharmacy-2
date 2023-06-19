@@ -21,7 +21,7 @@ const BreadCrumb = ({ menuData, type }: { menuData: any, type:string }) => {
     }
 
     return (
-        <nav className="flex px-5 sm:py-3 py-1 text-gray-700   border-muted border-b" aria-label="Breadcrumb">
+        <nav className=" px-5 sm:py-3 py-1 text-gray-700 sm:flex hidden  border-muted border-b" aria-label="Breadcrumb">
             <ol className="inline-flex items-center space-x-1 ">
                 <li className="inline-flex items-center">
                     <a href={`/`} className="inline-flex items-center sm:text-sm text-[10px] font-medium text-gray-700 hover:text-blue-600 ">

@@ -99,7 +99,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
   const handleChange = (state: string) => setState(state);
   const [chooseCountr, setChooseCountr] = useState(true)
   const [chooseLanguage, setChooseLanguage] = useState(false)
-
+  const [searchTimer, setSearchTimer] = useState<any>(null)
 
   useEffect(() => {
     setDomLoaded(true);
@@ -186,7 +186,6 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
   const [queryData, setQueryData] = useState("")
 
   function searchButtonOnClick(isOpen: boolean) {
-    debugger
     if (window.innerWidth > 767) {
       const lgScreenSearchBox = document.getElementById("lg-screen-search") as HTMLInputElement
 
@@ -204,63 +203,72 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
       }
     }
 
-    searchButtonOnMouseEnter(queryData, '', false)
+    searchButtonOnMouseEnter(queryData)
   }
   function searchBoxClear() {
     setQueryData("")
-    searchButtonOnMouseEnter("", '', true)
+    searchButtonOnMouseEnter("",)
     setVisibility(false);
   }
-  function searchButtonOnMouseEnter(query: string, key: string, isMobile: boolean) {
-    if (key === 'Enter') {
-      searchSuggestions(query, isMobile, "search")
+  function searchButtonOnMouseEnter(query: string) {
+    setQueryData(query)
+
+    clearTimeout(searchTimer)
+
+    const newTimer = setTimeout(() => {
+      getSearchData(query)
+    }, 700)
+
+    setSearchTimer(newTimer)
+
+    if (query != "") {
+      setVisibility(true);
     }
     else {
-      var myHeaders = new Headers();
-      myHeaders.append("X-Algolia-API-Key", "c54c5f0fc2e6bd0c3b97cfa5b3580705");
-      myHeaders.append("X-Algolia-Application-Id", "WHCXS2GWOG");
-      myHeaders.append("Content-Type", "application/json");
-
-      var raw = JSON.stringify({
-        "requests": [
-          {
-            "indexName": "products",
-            "params": "query=" + query
-          },
-          {
-            "indexName": "products_query_suggestions",
-            "params": "query=" + query
-          }
-        ],
-        "strategy": "none"
-      });
-
-      var requestOptions: RequestInit = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
-      setSearchLoadingState(true)
-
-      fetch("https://WHCXS2GWOG-dsn.algolia.net/1/indexes/*/queries?lang=ae-en", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          setData(result);
-          setSearchLoadingState(false);
-        })
-        .catch(error => console.log('error while fetching search data', error));
-
-      if (query != "") {
-        setVisibility(true);
-      }
-      else {
-        setVisibility(false);
-      }
-      setQueryData(query)
+      setVisibility(false);
     }
   }
 
+  const getSearchData = (query: string) => {
+
+    console.log("Search Data" + query);
+
+
+    var myHeaders = new Headers();
+    myHeaders.append("X-Algolia-API-Key", "c54c5f0fc2e6bd0c3b97cfa5b3580705");
+    myHeaders.append("X-Algolia-Application-Id", "WHCXS2GWOG");
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      "requests": [
+        {
+          "indexName": "products",
+          "params": "query=" + query
+        },
+        {
+          "indexName": "products_query_suggestions",
+          "params": "query=" + query
+        }
+      ],
+      "strategy": "none"
+    });
+
+    var requestOptions: RequestInit = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    setSearchLoadingState(true)
+
+    fetch("https://WHCXS2GWOG-dsn.algolia.net/1/indexes/*/queries?lang=ae-en", requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        setData(result);
+        setSearchLoadingState(false);
+      })
+      .catch(error => console.log('error while fetching search data', error));
+  }
 
   function saveAddresstoDb() {
     debugger
@@ -443,16 +451,14 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
             <Link href={"/"} className="my-auto">
               <Image src="https://www.lifepharmacy.com/images/logo-white.svg" alt=""
                 className=" bg-[#002579] filter md:flex hidden" width={380} height={250} />
-
               <Image className="mr-auto w-7 lg:hidden md:hidden" src="https://www.lifepharmacy.com/images/life.svg" alt="" width={100} height={100} />
-
             </Link>
 
             <div className="flex items-center w-full " >
               <label htmlFor="simple-search-lg" className="sr-only">Search</label>
               <div className="relative w-full">
 
-                <div className="relative group-search bg-gray-100  rounded-full " id="lg-screen-search" onKeyDown={(e) => { searchButtonOnMouseEnter((e.target as HTMLInputElement).value, e.key, false) }} onMouseDown={(e) => { searchButtonOnClick(true) }}   >
+                <div className="relative group-search bg-gray-100  rounded-full " id="lg-screen-search" onChange={(e) => { searchButtonOnMouseEnter((e.target as HTMLInputElement).value) }} onKeyDown={(e) => e.key === "Enter" ? searchButtonOnClick(false) : null} onMouseDown={(e) => { searchButtonOnClick(true) }}   >
                   <div className={`absolute inset-y-0  flex items-center pointer-events-none ${isArabic ? 'right-0 pr-3 ' : 'left-0 pl-3'}`}>
                     <svg aria-hidden="true" className="w-5 h-5 text-gray-500 " fill="currentColor"
                       viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -464,7 +470,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
                   {SearchLoadingState ?
                     <svg fill="none" className={`animate-spin w-5 h-5 absolute inline ${isArabic ? "left-8" : "right-8"}  inset-y-0 m-auto w-4 h-4 mx-2`} stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" shape-rendering="geometricPrecision" viewBox="0 0 24 24" height="24" width="24" ><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg> : ""}
 
-                  < input type="search" id="lg-searchbox"
+                  < input type="search" defaultValue={queryData} id="lg-searchbox"
                     className={`focus:ring-0 focus:ring-offset-0 hidden md:block bg-gray-100 border-gray-200 p-[0.6rem] border text-gray-900 text-sm rounded-full w-full ${isArabic ? 'pr-10 ' : 'pl-10 '} p-3`}
                     placeholder={langData.navbar.searchbox_text} />
 
@@ -719,7 +725,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
             </div>
           </div>
           <div className="w-full bg-white shadow-md">
-            <div className=" grid-cols-3 gap-4  hidden lg:grid md:grid bg-white  max-w-[1440px]  mx-auto relative">
+            <div className="   hidden  md:flex bg-white  max-w-[1440px]  mx-auto relative">
               <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat ">
                 <button
                   onMouseOver={() => shopByCatOnMouseOver()} className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele  border-r border-slate-300 w-[236px] items-center flex"
@@ -755,18 +761,16 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
                     </ul>
                   </div>
 
-
                   <div className="bg-white shadow-lg transform scale-0 group-hover:scale-100  
               z-10 transition duration-150 ease-in-out origin-top text-black  overflow-auto max-h-[28rem]  w-full hello py-4" >
                     <div className="mx-auto md:w-full xl:w-full mb-5" >
                       <div className="font-bold lg:text-2xl text-center mb-3" >TOP BRANDS</div>
-
                       <Swiper
                         centeredSlides={true}
                         className="my-6 "
                         slidesPerView={6}
                         autoplay={{
-                          delay: 10,
+                          delay: 2000,
                           disableOnInteraction: false,
                         }}
                         speed={3000}

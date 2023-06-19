@@ -172,8 +172,8 @@ export default function Footer({ langData }: { langData: any }) {
                         </div>
                     </div>
                 </footer>
-
             </div>
+            
             <div className="bg-[url('https://www.lifepharmacy.com/images/home/subscribe-2.jpg')]  py-2">
                 <div className="flex space-x-3 justify-center ">
                     <Link href={"https://www.facebook.com/lifepharmacyme/"} className="border border-white rounded-full p-2">
@@ -205,7 +205,6 @@ export default function Footer({ langData }: { langData: any }) {
                     </div>
                     <hr className=" border-gray-200 sm:mx-auto  mb-1" />
 
-                    <Image src={"https://www.lifepharmacy.com/images/payment-method.svg"} height={350} width={350} className="" alt="secure" />
                 </div>
                 <section>
                     <h4 className="font-semibold">Live Healthy with Life Pharmacy – First Omni-Channel Pharmacy & Healthcare Retailer in Middle East.</h4>

@@ -399,6 +399,29 @@ section{
     @apply py-4
 }
 
+.banner-overlay>a {
+    position: relative
+}
+.banner-overlay>a:after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: hsla(0,0%,100%,.3);
+
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: all .4s ease
+}
+
+.banner-overlay:focus>a:after,.banner-overlay:hover>a:after {
+    visibility: visible;
+    opacity: 1
+}
 
 
 

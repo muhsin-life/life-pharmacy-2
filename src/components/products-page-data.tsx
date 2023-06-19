@@ -160,7 +160,7 @@ const ProductsPageData = ({ filterPath, categoryData, brandsData, isSearchPage, 
     return (
         <div className=' max-w-[1450px] mx-auto  sm:px-[10px] px-[5px]'>
             {!isSearchPage ?
-                <div className="flex justify-between">
+                <div className="flex justify-between py-3">
                     <div className="h-fit my-auto">
                         <p className="sm:text-sm text-xs">Showing <span className="text-black">{noOfProducts}</span> of <span className="text-black ">{categoryData.total_count}</span> Products</p>
                     </div>

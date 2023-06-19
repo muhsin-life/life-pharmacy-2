@@ -10,22 +10,20 @@ import { incrementQuantity } from '../redux/cart.slice';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import ProductImgLoader from './product-img-loader';
-import { useWindowDimensions } from '@/hooks/useWindowDimensions';
 import { useLanguage } from '@/hooks/useLanguage';
 export const SingleProductData = ({ pro_data, isRowView }: { pro_data: any, isRowView: boolean }) => {
     const { pathname } = useRouter()
     const cartItems = useSelector((state: RootState) => state.cart);
-    const { width } = useWindowDimensions()
     const dispatch = useDispatch();
     const { locale, currency } = useLanguage();
     const parts = locale?.split("-")
     const [addedToCartClicked, addedToCartState] = useState(false)
+    const [isValidImage, setIsValidImage] = useState(true);
 
     const getProductQuantity = (productId: any) => {
         const productItem = cartItems.find((item: any) => item.id === productId);
         return productItem ? productItem.quantity : 0;
     };
-
 
     function reviewColor(rating: number) {
         if (rating == 0) {
@@ -43,7 +41,6 @@ export const SingleProductData = ({ pro_data, isRowView }: { pro_data: any, isRo
         addedToCartState(true);
         toast.success(`Item Added to the cart`);
     }
-    const [isValidImage, setIsValidImage] = useState(true);
 
     const handleImageError = () => {
         setIsValidImage(false);
@@ -57,15 +54,16 @@ export const SingleProductData = ({ pro_data, isRowView }: { pro_data: any, isRo
             {pro_data && !isRowView ?
                 <div className="relative border border-muted rounded-lg bg-white" >
                     <figure className='border border-muted m-2 rounded-lg relative'>
-                        <Link href={`/product/${pro_data.slug}`} className="   block bg-white  mx-auto rounded-lg rounded-b-none  w-full">
+                        <Link href={`/product/${pro_data.slug}`} className="   block bg-white  mx-auto rounded-lg rounded-b-none">
 
                             {isValidImage ?
-                                <Image onError={handleImageError} className={`rounded-lg mx-auto  object-cover w-full h-full`} src={pro_data.images?.featured_image} width={200} height={200} alt="product_img" />
+                            <div className='h-[200px] max-w-[200px]'>
+                                <Image onError={handleImageError} className={`rounded-lg mx-auto object-cover h-full w-full`}  src={pro_data.images?.featured_image} width={200} height={200} alt="product_img" />
+                            </div>
                                 :
-                                <div className='max-h-[250px] max-w-[250px] mx-auto'>
+                                <div className=' w-full h-full'>
                                     <ProductImgLoader />
                                 </div>
-
                             }
                             <span className="flex absolute bg-amber-400 opacity-90 rounded-bl-lg px-[7px] py-[1px] bottom-0 left-0 rounded-tr-xl shadow-xl ">
                                 <div className="my-auto">
@@ -187,7 +185,7 @@ export const SingleProductData = ({ pro_data, isRowView }: { pro_data: any, isRo
                     </div>
 
                     {pro_data.label ? <div style={{ background: pro_data.label.color_code }} className={`  skeleton-box flex absolute left-2 top-2 w-fit text-white px-3 items-center rounded-tl-lg rounded-br-2xl text-[9px]  py-[2px]  h-fit`}><span className='items-center'>{pro_data.label.label_text}</span>
-                        <div className={`${pathname?.substring(4, 6) === 'en' ? "ml-2" : "ml-2"}`}>{generateIcon(pro_data.label.icon_type)}</div></div> : null}
+                        <div className={`${parts && parts[1] === 'en' ? "ml-2" : "mr-2"}`}>{generateIcon(pro_data.label.icon_type)}</div></div> : null}
                     <div className="absolute bottom-2 right-2 flex h-7 ">
                         {addedToCartClicked && getProductQuantity(pro_data.id) > 0 ?
                             <>
@@ -207,8 +205,8 @@ export const SingleProductData = ({ pro_data, isRowView }: { pro_data: any, isRo
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="{1.5}" stroke="white" className="h-4 w-5 mx-auto">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                     </svg>
-                                </button></>
-
+                                </button>
+                            </>
                             :
                             <button onClick={() => {
                                 addedToCart(pro_data)

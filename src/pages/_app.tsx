@@ -10,6 +10,8 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { Poppins } from 'next/font/google';
 import NextNProgress from 'nextjs-progressbar';
 import Head from 'next/head'
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { useState } from 'react'
 const poppins = Poppins({
   weight: '300',
   subsets: ['latin'],
@@ -24,7 +26,7 @@ type TProps = AppProps & {
 
 
 const App = ({ Component, data, brands_data, pageProps }: TProps) => {
-
+  const [queryClient] = useState(() => new QueryClient());
   const getDirection = (lang: any) => {
     if (lang === "ar") {
       return "rtl"
@@ -35,18 +37,22 @@ const App = ({ Component, data, brands_data, pageProps }: TProps) => {
   const { t, locale } = useLanguage();
   return (
     <>
-      <Head>
-        <title>Life Pharmacy UAE - Online Pharmacy Delivery in 30 minutes</title>
-      </Head>
-      <NextNProgress color="#eba834" />
-      <SessionProvider >
-        <main dir={getDirection(locale)} className={poppins.className}>
-          <Layout data={data} brands_data={brands_data}  isArabic={false} lang={locale ? locale : "en"} langData={t} >
-            <Component {...pageProps} />
-          </Layout>
-        </main>
-      </SessionProvider></>
-
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Head>
+            <title>Life Pharmacy UAE - Online Pharmacy Delivery in 30 minutes</title>
+          </Head>
+          <NextNProgress color="#eba834" />
+          <SessionProvider >
+            <main dir={getDirection(locale)} className={poppins.className}>
+              <Layout data={data} brands_data={brands_data} isArabic={false} lang={locale ? locale : "en"} langData={t} >
+                <Component {...pageProps} />
+              </Layout>
+            </main>
+          </SessionProvider>
+        </Hydrate>
+      </QueryClientProvider>
+    </>
   )
 
 }

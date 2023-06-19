@@ -27,23 +27,22 @@ const DynamicSliderGrid: FC<props> = ({ data, isDesktop, isMobile }) => {
         <div className={"max-w-[1440px] mx-auto relative"}>
 
             <Swiper
-
                 slidesPerView={isDesktop ? data.settings.desktop.column : data.settings.mobile.column}
                 pagination={data.settings.show_pagination === true ? { dynamicBullets: true } : false}
-                // navigation={data.settings.navigation}
                 onBeforeInit={(swiper) => {
                     swiperRef.current = swiper;
                 }}
                 modules={[Pagination, Navigation, Autoplay]}
                 autoplay={data.settings.autoplay ? true : false}
                 spaceBetween={20}
-                className={"max-w-[1440px]"} >
+                className={"max-w-[1440px]"}
+                speed={1000} >
                 <span className="md:flex hidden">
                     {data.settings.navigation ?
                         <>
                             <div className="group  top-0 bottom-0 absolute flex justify-start pr-16 z-50 space-x-1">
                                 <div>
-                                    <svg viewBox="0 0 44 502" fill="none" xmlns="http://www.w3.org/2000/svg" className="-ml-[1px] group-hover:scale-x-150 scale-x-100 transition-all duration-300 group-hover:fill-white fill-white/50 h-full w-full"><path className="wave" d="M0.999973 501C32.9999 301.5 42.9999 308 42.9999 252.5C42.9999 197 29.4999 189 1.00002 0.999996L0.999973 501Z" ></path></svg>
+                                    <svg viewBox="0 0 44 502" fill="none" xmlns="http://www.w3.org/2000/svg" className="-ml-[1px] group-hover:scale-x-[2] scale-x-100 transition-all duration-300 group-hover:fill-white fill-white/50 h-full w-full"><path className="wave" d="M0.999973 501C32.9999 301.5 42.9999 308 42.9999 252.5C42.9999 197 29.4999 189 1.00002 0.999996L0.999973 501Z" ></path></svg>
                                 </div>
                                 <button onClick={() => swiperRef.current?.slidePrev()} className="my-auto   rounded-full group-hover:-translate-x-10 translate-x-0 transition-all ease-in duration-100">
                                     <div className="  group-hover:bg-transparent group-hover:opacity-100 bg-slate-50 opacity-50 rounded-full p-3 my-auto">
@@ -64,7 +63,7 @@ const DynamicSliderGrid: FC<props> = ({ data, isDesktop, isMobile }) => {
                                     </div>
                                 </button>
                                 <div>
-                                    <svg viewBox="0 0 44 502" fill="none" xmlns="http://www.w3.org/2000/svg" className="z-50 group-hover/next:scale-x-150 scale-x-100 transition-all duration-300 group-hover/next:fill-white fill-white/50 h-full w-full rotate-180"><path className="wave" d="M0.999973 501C32.9999 301.5 42.9999 308 42.9999 252.5C42.9999 197 29.4999 189 1.00002 0.999996L0.999973 501Z" ></path></svg>
+                                    <svg viewBox="0 0 44 502" fill="none" xmlns="http://www.w3.org/2000/svg" className="z-50 group-hover/next:scale-x-[2] scale-x-100 transition-all duration-300 group-hover/next:fill-white fill-white/50 h-full w-full rotate-180"><path className="wave" d="M0.999973 501C32.9999 301.5 42.9999 308 42.9999 252.5C42.9999 197 29.4999 189 1.00002 0.999996L0.999973 501Z" ></path></svg>
                                 </div>
                             </div></>
 
@@ -74,7 +73,7 @@ const DynamicSliderGrid: FC<props> = ({ data, isDesktop, isMobile }) => {
                 {data.section_data_array.map((sec_data: any) => (
                     (isDesktop && sec_data.desktop.image_url || isMobile && sec_data.mobile.image_url) &&
                     <SwiperSlide>
-                        <ImgPage sectionData={sec_data} isDesktop={isDesktop} isMobile={isMobile} m_height={0} m_width={0} d_width={data.section_data_array[0].desktop.width} />
+                        <ImgPage sectionData={sec_data} isDesktop={isDesktop} isMobile={isMobile} m_height={0} m_width={0} d_width={data.section_data_array[0].desktop.width} priority={true}/>
                     </SwiperSlide>
                 ))}
 
