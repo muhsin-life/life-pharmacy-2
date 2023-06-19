@@ -17,7 +17,7 @@ const DynamicGrid: FC<props> = ({ data, isDesktop, isMobile }) => {
         {data.section_data_array && data.section_data_array.map((sec_data: any) => (
             (sec_data.desktop.is_enabled && isDesktop || sec_data.mobile.is_enabled && isMobile) ?
                 ((isDesktop && sec_data.desktop.image_url || isMobile && sec_data.mobile.image_url) ?
-                    <ImgPage sectionData={sec_data} d_width={data.section_data_array[0].desktop.width} isDesktop={isDesktop} isMobile={isMobile} m_width={data.section_data_array[0].mobile.width} m_height={data.section_data_array[0].mobile.height} priority={false}/>
+                    <ImgPage sectionData={sec_data} d_width={data.section_data_array[0].desktop.width} isDesktop={isDesktop} isMobile={isMobile} m_width={data.section_data_array[0].mobile.width} m_height={data.section_data_array[0].mobile.height} />
                     : "") : null
         ))}
     </div>

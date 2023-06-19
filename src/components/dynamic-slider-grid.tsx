@@ -73,7 +73,7 @@ const DynamicSliderGrid: FC<props> = ({ data, isDesktop, isMobile }) => {
                 {data.section_data_array.map((sec_data: any) => (
                     (isDesktop && sec_data.desktop.image_url || isMobile && sec_data.mobile.image_url) &&
                     <SwiperSlide>
-                        <ImgPage sectionData={sec_data} isDesktop={isDesktop} isMobile={isMobile} m_height={0} m_width={0} d_width={data.section_data_array[0].desktop.width} priority={true}/>
+                        <ImgPage sectionData={sec_data} isDesktop={isDesktop} isMobile={isMobile} m_height={0} m_width={0} d_width={data.section_data_array[0].desktop.width} />
                     </SwiperSlide>
                 ))}
 

@@ -8,7 +8,6 @@ interface pageProps {
     m_width: number
     m_height: number
     d_width: number
-    priority:boolean
 }
 
 const generatePath = (type_key: string, slug: string, type_value: string) => {
@@ -30,12 +29,12 @@ const generatePath = (type_key: string, slug: string, type_value: string) => {
     }
 }
 
-const ImgPage: FC<pageProps> = ({ sectionData, isDesktop, isMobile, m_width, m_height, d_width, priority }) => {
+const ImgPage: FC<pageProps> = ({ sectionData, isDesktop, isMobile, m_width, m_height, d_width }) => {
 
     return (
         <div className="banner-overlay ">
             <Link href={generatePath(sectionData.type_key, sectionData.slug, sectionData.type_value)} >
-                <Image  priority={priority} src={isDesktop && sectionData.desktop.image_url ? sectionData.desktop.image_url : sectionData.mobile.image_url} className={`mx-auto ${isDesktop ? 'max-w-full' : 'w-full'}`}
+                <Image src={isDesktop && sectionData.desktop.image_url ? sectionData.desktop.image_url : sectionData.mobile.image_url} className={`mx-auto ${isDesktop ? 'max-w-full' : 'w-full'}`}
                     height={isDesktop ? (sectionData.desktop.height ? sectionData.desktop.height : 109) : (sectionData.mobile.height ? sectionData.mobile.height : m_height ? m_height : 100)}
                     width={isDesktop ? (sectionData.desktop.width ? sectionData.desktop.width : d_width ? d_width : 390) : sectionData.mobile.width ? sectionData.mobile.width : m_width ? m_width : 100} alt={sectionData.slug} />
             </Link>
