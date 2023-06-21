@@ -5,7 +5,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation, Autoplay, Swiper as SwiperType } from "swiper";
 import ImgPage from "./img-page";
-import { useSwiper } from 'swiper/react';
 
 interface props {
     data: any,

@@ -24,6 +24,8 @@ const generatePath = (type_key: string, slug: string, type_value: string) => {
             return type_value
         case "product":
             return `/product/${slug}`
+        case "clinic-appointment-screen":
+            return "/medical-centre";
         default:
             return "#"
     }
@@ -32,7 +34,7 @@ const generatePath = (type_key: string, slug: string, type_value: string) => {
 const ImgPage: FC<pageProps> = ({ sectionData, isDesktop, isMobile, m_width, m_height, d_width }) => {
 
     return (
-        <div className="banner-overlay ">
+        <div className="banner-overlay">
             <Link href={generatePath(sectionData.type_key, sectionData.slug, sectionData.type_value)} >
                 <Image src={isDesktop && sectionData.desktop.image_url ? sectionData.desktop.image_url : sectionData.mobile.image_url} className={`mx-auto ${isDesktop ? 'max-w-full' : 'w-full'}`}
                     height={isDesktop ? (sectionData.desktop.height ? sectionData.desktop.height : 109) : (sectionData.mobile.height ? sectionData.mobile.height : m_height ? m_height : 100)}

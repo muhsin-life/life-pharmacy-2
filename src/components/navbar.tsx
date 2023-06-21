@@ -32,6 +32,7 @@ import { SmSearchBoxModal } from "./sm-searchbox-modal";
 import SmMenu from "./sm-menu";
 import { useLabels } from "@headlessui/react/dist/components/label/label";
 import { useLanguage } from "@/hooks/useLanguage";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 interface navbarProps {
   data: any,
@@ -54,7 +55,6 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
   ]
 
   const { data: session } = useSession()
-  //@ts-ignore
 
   const cartItems = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch();
@@ -100,6 +100,9 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
   const [chooseCountr, setChooseCountr] = useState(true)
   const [chooseLanguage, setChooseLanguage] = useState(false)
   const [searchTimer, setSearchTimer] = useState<any>(null)
+  const [hoverIndex, setHoverIndex] = useState<any>(0)
+  const [subCatIndex, setSubCatIndex] = useState<any>(0)
+
 
   useEffect(() => {
     setDomLoaded(true);
@@ -117,9 +120,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
     setChooseLanguage(false);
   }
 
-  function slugify(text: string) {
-    return text.toLowerCase().replace(/[\s&]+/g, '-');
-  }
+
 
   function searchSuggestions(searchData: string, isMobile: boolean, type: string) {
     if (isMobile) {
@@ -155,13 +156,6 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
   }
 
   var i = 1;
-
-  function shopByCatOnMouseOver() {
-    setShowNavbarAcc(true);
-    (document.getElementById("BeautyCareele") as HTMLInputElement).classList.remove("hidden");
-    (document.getElementById("BeautyCarebtn") as HTMLInputElement).classList.add("text-blue-400", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50");
-    i = 1;
-  }
 
   function ulListTrigger(e: React.MouseEvent<HTMLLIElement, MouseEvent>, itemName: string) {
     var elements = document.getElementsByClassName("list-elements")
@@ -205,6 +199,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
 
     searchButtonOnMouseEnter(queryData)
   }
+
   function searchBoxClear() {
     setQueryData("")
     searchButtonOnMouseEnter("",)
@@ -295,6 +290,14 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
 
 
   }
+
+  function slugify(text: string) {
+    return text.toLowerCase().replace(/[\s&/]+/g, '-')
+  }
+  function generatePath(grand_p: string, parent: string, child: string) {
+    return `/category/${slugify(grand_p)}/${parent}/${slugify(child)}`
+  }
+
   var addressId = session ? (session.token.addresses.length != 0 ? (session.token.addresses[session.token.addresses.length - 1]?.id) + 1 : 12345 + 1) : ""
   const [formData, setFormData] = useState({
     id: addressId,
@@ -725,10 +728,10 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
             </div>
           </div>
           <div className="w-full bg-white shadow-md">
-            <div className="   hidden  md:flex bg-white  max-w-[1440px]  mx-auto relative">
+            <div className="hidden md:flex bg-white max-w-[1440px] mx-auto relative ">
               <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat ">
                 <button
-                  onMouseOver={() => shopByCatOnMouseOver()} className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele  border-r border-slate-300 w-[236px] items-center flex"
+                  className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele  border-r border-slate-300 w-[242px] items-center flex"
                   id="dropdownDefaultButton" data-dropdown-toggle="dropdown">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                     stroke="currentColor" className="w-6 h-6 my-2 float-left ml-3">
@@ -743,79 +746,44 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
                   </svg>
                 </button>
 
-                <div className="flex justify-start absolute bg-white  scale-0 group-hover:scale-100 left-0 right-0">
-                  <div className="z-30  bg-white">
-                    <ul className="text-sm text-gray-700  rounded-sm transform scale-0 group-hover:scale-100  
-              transition duration-100 ease-in-out origin-top bg-white w-[236px] h-full flex flex-wrap border-r-[0.1px] border-slate-300 shadow-md" id="catgories-element">
+                <div className=" z-30 absolute bg-white scale-0 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300 left-0 right-0 ">
+                  <div className=" bg-white grid grid-cols-12  ">
+                    <div className=" col-span-3 ">
                       {data.data.map((item: any, i: number) => (
-                        <li key={item.name} onMouseOver={(e) => { ulListTrigger(e, (item.name + "ele").replace(/\s/g, '')) }} className={" group/btn w-full list" + i}>
-                          <Link href={`/category/${slugify(item.name)}`} id={(item.name + "btn").replace(/\s/g, '')} className={`single-btn w-full py-4 transition-all duration-100 ease-in-out group-hover/btn:bg-blue-50 group-hover/btn:border-blue-500 group-hover/btn:text-blue-400 ${isArabic ? 'pr-5 group-hover/btn:border-r-[4px]' : 'pl-5 group-hover/btn:border-l-[4px]'} text-left flex px-2`} >
-                            <span className="flex-1 mx-3 whitespace-nowrap">  {item.name}   </span>
-                            <span className="mr-auto my-auto">
-                              <svg className={`fill-current h-4 w-4 -rotate-90 transition duration-150 ease-in-out ${isArabic ? 'rotate-90' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                              </svg>
-                            </span>
-                          </Link>
-                        </li>
+                        <button onMouseOver={() => setHoverIndex(i)} className={`py-4 border-muted border w-full ${hoverIndex === i ? 'bg-slate-100' : ""}`}>
+                          <h5 className={`font-bold uppercase text-sm `} >{item.name}</h5>
+                        </button>
                       ))}
-                    </ul>
-                  </div>
-
-                  <div className="bg-white shadow-lg transform scale-0 group-hover:scale-100  
-              z-10 transition duration-150 ease-in-out origin-top text-black  overflow-auto max-h-[28rem]  w-full hello py-4" >
-                    <div className="mx-auto md:w-full xl:w-full mb-5" >
-                      <div className="font-bold lg:text-2xl text-center mb-3" >TOP BRANDS</div>
-                      <Swiper
-                        centeredSlides={true}
-                        className="my-6 "
-                        slidesPerView={6}
-                        autoplay={{
-                          delay: 2000,
-                          disableOnInteraction: false,
-                        }}
-                        speed={3000}
-                        modules={[Autoplay]}
-                        loop={true}
-                        breakpoints={{
-                          1024: {
-                            width: 1024,
-                            slidesPerView: 7,
-                          },
-                          768: {
-                            width: 768,
-                            slidesPerView: 6
-                          },
-                        }}
-                      >
-
-                        {brands_data.data.brands.map((bd: any) => (
-                          <SwiperSlide className="cursor-grab">
-                            <Link href={`/brand/${bd.slug}`}>
-                              <Image className="mx-auto md:w-16 md:h-16 lg:w-24 lg:h-24 xl:w-24 xl:h-24 rounded-full border border-gray-300 " width={150} height={150} src={bd.images.logo} alt="" />
-                            </Link>
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
-
                     </div>
-                    {data.data.map((item: any) => (
-                      <div className="w-full hidden list-elements" id={(item.name + "ele").replace(/\s/g, '')} onMouseOver={() => { (document.getElementById((item.name + "btn").replace(/\s/g, '')) as HTMLElement).classList.add("text-blue-500", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50") }} onMouseLeave={() => { ((document.getElementById((item.name + "btn").replace(/\s/g, '')) as HTMLElement)).classList.remove("text-blue-500", isArabic ? "border-r-4" : "border-l-4", "border-blue-500", "bg-blue-50") }}>
+                    <div className=" col-span-3">
+                      {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (
+                        item.children.map((itm: any, i: number) => (
+                          <button onMouseOver={() => setSubCatIndex(i)} className={`py-4 border-muted border w-full ${subCatIndex === i ? 'bg-slate-100' : ""}`}>
+                            <h5 className="font-bold uppercase text-sm" >{itm.name}</h5>
+                          </button>
+                        ))
+                      ))}
+                    </div>
 
-                        <ul className={"right-0 u-list bg-white rounded-sm top-0 hover-menu  h-[35rem] ul-list-hover w-full " + (item.name + "ele").replace(/\s/g, '')} >
-
-                          <li key={item.name + "elem"} className="">
-
-                            <div className=" mb-9 ">
-                              <div className="flex justify-between  w-full flex-wrap">
-                                <div className="  lg:order-none md:w-full">
-                                  <Example acc_data={item} />
-                                </div>
+                    <div className="space-y-4 col-span-6 py-2 px-1">
+                      <div className="grid xl:grid-cols-4 grid-cols-3 gap-4">
+                        {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (
+                          item.children.slice(subCatIndex, subCatIndex + 1).map((itm: any) => (
+                            itm.sections.map((sec: any) => (
+                              sec.images.logo ?
+                              <div className="banner-overlay">
+                                   <Link className=" group/catImage" href={generatePath(item.name, itm.slug, sec.name)}>
+                                  <Image src={sec.images.logo} alt={sec.name} width={100} height={100} className=" mx-auto group-hover/catImage:scale-110 duration-200 transition-transform" />
+                                  <h5 className="font-bold uppercase mt-3 text-center text-xs">{sec.name}</h5>
+                                </Link>
                               </div>
-                            </div>
-                          </li>
-                        </ul>
+                             
+                                : null
+                            ))
+                          ))
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
               </div>

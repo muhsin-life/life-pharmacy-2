@@ -2,11 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-    font-family: '__Poppins_b0a861';
-    background-color: #fff;
-    -webkit-font-smoothing: antialiased;
-}
 
 ::-webkit-scrollbar {
     width: 10px;
@@ -421,6 +416,13 @@ section{
 .banner-overlay:focus>a:after,.banner-overlay:hover>a:after {
     visibility: visible;
     opacity: 1
+}
+
+.bg-light{
+    @apply bg-[#f4f7ff]
+}
+.bg-light:hover{
+    @apply bg-[#dae0e5]
 }
 
 
