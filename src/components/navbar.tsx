@@ -32,7 +32,7 @@ import { SmSearchBoxModal } from "./sm-searchbox-modal";
 import SmMenu from "./sm-menu";
 import { useLabels } from "@headlessui/react/dist/components/label/label";
 import { useLanguage } from "@/hooks/useLanguage";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { ArrowRightIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 interface navbarProps {
   data: any,
@@ -729,56 +729,59 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
           </div>
           <div className="w-full bg-white shadow-md">
             <div className="hidden md:grid grid-cols-12 bg-white max-w-[1440px] mx-auto relative ">
-              <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat col-span-3">
+              <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat col-span-2 ">
                 <button
-                  className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele flex justify-between border-r border-slate-300  items-center w-full"
+                  className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele flex justify-between px-2 border-r border-slate-300  items-center w-full bg-blue-50"
                   id="dropdownDefaultButton" data-dropdown-toggle="dropdown">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                    stroke="currentColor" className="w-6 h-6 my-2 float-left ml-3">
+                    stroke="currentColor" className="w-6 h-6 my-2 float-left ">
                     <path strokeLinecap="round" strokeLinejoin="round"
                       d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                   </svg>
-                  <div className="text-start  mr-10 text-base group-1 align-middle flex justify-between ">
-                    {langData.navbar.shop_by_cat} </div>
+                  <div className="text-start   text-sm group-1 align-middle flex justify-between ">
+                    {langData.navbar.shop_by_cat}
+                  </div>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                     stroke="currentColor" className="h-6 float-right  w-4 mr-2 group-hover:-rotate-180 transition-transform duration-200">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                   </svg>
                 </button>
 
-                <div className=" z-30 absolute bg-white -0 group-hover:opacity-100 opacity-0 group-hover:scale-100 scale-0 transition-opacity duration-300 left-0 right-0 ">
-                  <div className=" bg-white grid grid-cols-12  ">
-                    <div className=" col-span-3 ">
+                <div className="z-30 absolute  group-hover:opacity-100 opacity-0 group-hover:scale-100 scale-0   overflow-y-auto transition-opacity duration-300 left-0 right-0 ">
+                  <div className="  grid grid-cols-12  ">
+                    <div className=" col-span-2 max-h-[24rem] ">
                       {data.data.map((item: any, i: number) => (
-                        <button onMouseOver={() => setHoverIndex(i)} className={`py-4 border-muted border w-full ${hoverIndex === i ? 'bg-slate-100' : ""}`}>
-                          <h5 className={`font-bold uppercase text-sm `} >{item.name}</h5>
+                        <button onMouseOver={() => setHoverIndex(i)} className={`py-4 border-slate-200 border-y bg-white w-full flex justify-between px-4 items-center ${hoverIndex === i ? 'bg-blue-200' : ""}`}>
+                          <h5 className={` text-sm `} >{item.name}</h5>
+                          <ChevronRightIcon className="w-3 h-3" />
                         </button>
                       ))}
                     </div>
-                    <div className=" col-span-3">
+                    <div className=" col-span-2 bg-emerald-50 h-fit shadow-2xl">
                       {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (
                         item.children.map((itm: any, i: number) => (
-                          <button onMouseOver={() => setSubCatIndex(i)} className={`py-4 border-muted border w-full ${subCatIndex === i ? 'bg-slate-100' : ""}`}>
-                            <h5 className="font-bold uppercase text-sm" >{itm.name}</h5>
+                          <button onMouseOver={() => setSubCatIndex(i)} className={`py-4 border-muted border-y flex px-4 whitespace-nowrap  justify-between w-full text-sm ${subCatIndex === i ? 'bg-emerald-200' : ""}`}>
+                            <h5 className=" text-sm" >{itm.name}</h5>
+                          <ChevronRightIcon className="w-3 h-3" />
+
                           </button>
                         ))
                       ))}
                     </div>
 
-                    <div className="space-y-5 col-span-6 py-2 px-1">
-                      <h3 className="font-semibold text-center ">CATEGORIES</h3>
+                    <div className="space-y-5 col-span-8 py-2 px-1 bg-white">
+                      {/* <h3 className="font-semibold text-center ">CATEGORIES</h3> */}
                       <div className="grid xl:grid-cols-4 grid-cols-3 gap-4 py-2">
-                        {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (                          
+                        {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (
                           item.children.slice(subCatIndex, subCatIndex + 1).map((itm: any) => (
                             itm.sections.map((sec: any) => (
                               sec.images.logo ?
-                              <div className="banner-overlay">
-                                   <Link className=" group/catImage" href={generatePath(item.name, itm.slug, sec.name)}>
-                                  <Image src={sec.images.logo} alt={sec.name} width={100} height={100} className=" mx-auto group-hover/catImage:scale-110 duration-200 transition-transform" />
-                                  <h5 className="font-bold uppercase mt-3 text-center text-xs">{sec.name}</h5>
-                                </Link>
-                              </div>
-                             
+                                <div className="banner-overlay">
+                                  <Link className=" group/catImage" href={generatePath(item.name, itm.slug, sec.name)}>
+                                    <Image src={sec.images.logo} alt={sec.name} width={100} height={100} className=" mx-auto group-hover/catImage:scale-110 duration-200 transition-transform" />
+                                    <h5 className="font-bold uppercase mt-3 text-center text-xs">{sec.name}</h5>
+                                  </Link>
+                                </div>
                                 : null
                             ))
                           ))
