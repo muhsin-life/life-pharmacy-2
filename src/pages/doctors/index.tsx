@@ -8,36 +8,55 @@ import { AccordionTrigger, AccordionContent, AccordionItem } from "@/components/
 import * as Accordion from '@radix-ui/react-accordion';
 import Link from "next/link"
 import BreadCrumb from "@/components/breadcrumb"
-import { type } from "os"
+import { useRouter } from "next/router"
 
-export default function Doctors({ DoctorsListData }: { DoctorsListData: any }) {
+export default function ({ DoctorsListData, SpecialityQuery }: { DoctorsListData: any, SpecialityQuery: any }) {
+    console.log(DoctorsListData);
 
-    const [doctorsData, setDoctorsData] = useState(DoctorsListData.data)
+    const [doctorsData, setDoctorsData] = useState(DoctorsListData.data.doctors)
     const [noOfDoctors, setnoOfDoctors] = useState(10)
     const [animateSpin, setAnimateSpin] = useState(false)
-
+    const { query } = useRouter()
+    const router = useRouter()
 
     const LoadMoreDoctorsData = () => {
         setAnimateSpin(true)
 
-        getDoctorsListData(noOfDoctors, 10).then(dList => {
-            setDoctorsData([...doctorsData, ...dList.data])
+        getDoctorsListData(noOfDoctors, 10, SpecialityQuery ? query.toString() : null).then(dList => {
+            let doctorsListData = SpecialityQuery ? dList.data.doctors : dList.data
+            setDoctorsData([...doctorsData, ...doctorsListData])
             setAnimateSpin(false)
-        })
 
+        })
         setnoOfDoctors(no => no + 10)
     }
 
+    const specialitiesOnChange = (specialityQuery: string) => {
+        router.push({
+            pathname: "/doctors", query: { speciality: specialityQuery, slot: query.slot ? query.slot : "" },
+        })
+    }
+
+    const slotsOnChange = (specialityQuery: string) => {
+        router.push({
+            pathname: "/doctors", query: { speciality: specialityQuery, slot: query.slot ? query.slot : "" },
+        })
+    }
+
+
+    useEffect(() => {
+        setDoctorsData(DoctorsListData.data.doctors)
+
+    })
     return (
         <div className="max-w-[1440px] px-[10px] mx-auto">
-            <BreadCrumb menuData={["Medical Centre", "Doctors"] } type="Medical Centre" />
+            <BreadCrumb menuData={["Medical Centre", "Doctors"]} type="Medical Centre" />
             <div className="grid grid-cols-12 space-x-2">
                 <div className="col-span-3">
                     <form className="hidden lg:block sticky top-40 ">
-
                         <div className="justify-between flex py-2 text-sm">
                             <p>Filters:</p>
-                            <Link href="#" className="text-primary "><small>Clear All</small></Link>
+                            <Link href="/doctors" className="text-primary "><small>Clear All</small></Link>
                         </div>
                         <hr />
                         <Accordion.Root
@@ -62,32 +81,46 @@ export default function Doctors({ DoctorsListData }: { DoctorsListData: any }) {
 
                                 <AccordionContent className="py-2" >
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">AnyTime</label>
+                                        <input type="radio" id="anytime" name="slot" checked={query.slot === "anytime" || !query.slot} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "anytime" },
+                                        })} />
+                                        <label htmlFor="anytime" className="ml-4 cursor-pointer">AnyTime</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Today</label>
+                                        <input type="radio" id="Today" name="slot" checked={query.slot === "today"} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "today" },
+                                        })} />
+                                        <label htmlFor="Today" className="ml-4 cursor-pointer" >Today</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Tommorrow</label>
+                                        <input type="radio" id="Tommorrow" name="slot" checked={query.slot === "tommorrow"} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "tommorrow" },
+                                        })} />
+                                        <label htmlFor="Tommorrow" className="ml-4 cursor-pointer" >Tommorrow</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Next Friday</label>
+                                        <input type="radio" id="NextFriday" name="slot" checked={query.slot === "next_one_day"} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "next_one_day" },
+                                        })} />
+                                        <label htmlFor="NextFriday" className="ml-4 cursor-pointer" >Next Sunday</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Next Saturday</label>
+                                        <input type="radio" id="NextSaturday" name="slot" checked={query.slot === "next_two_day"} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "next_two_day" },
+                                        })} />
+                                        <label htmlFor="NextSaturday" className="ml-4 cursor-pointer">Next Monday</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Next Sunday</label>
+                                        <input type="radio" id="NextSunday" name="slot" checked={query.slot === "next_three_day"} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "next_three_day" },
+                                        })} />
+                                        <label htmlFor="NextSunday" className="ml-4 cursor-pointer">Next Tuesday</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Next Monday</label>
+                                        <input type="radio" id="NextMonday" name="slot" checked={query.slot === "next_four_day"} onChange={() => router.push({
+                                            query: { speciality: query.speciality ? query.speciality : "", slot: "next_four_day" },
+                                        })} />
+                                        <label htmlFor="NextMonday" className="ml-4 cursor-pointer">Next Wednesday</label>
                                     </div>
                                 </AccordionContent>
                             </AccordionItem>
@@ -100,46 +133,58 @@ export default function Doctors({ DoctorsListData }: { DoctorsListData: any }) {
                             collapsible>
                             <AccordionItem className="py-2" value="item-1">
                                 <AccordionTrigger className=" text-lg">Specialities</AccordionTrigger>
-
                                 <AccordionContent className="py-2" >
-                                    <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">General Medicine</label>
+                                    <div className="mb-2 ">
+                                        <input type="radio" id="GeneralMedicine" name="Speciality" checked={query.speciality === "general-medicine" || !query.speciality} onChange={() => {
+                                            specialitiesOnChange("general-medicine")
+                                        }} />
+                                        <label htmlFor="GeneralMedicine" className="ml-4 cursor-pointer">General Medicine</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Paediatrics</label>
+                                        <input type="radio" id="Paediatrics" name="Speciality" checked={query.speciality === "paediatrics"} onChange={() => {
+                                            specialitiesOnChange("paediatrics")
+                                        }} />
+                                        <label htmlFor="Paediatrics" className="ml-4 cursor-pointer" >Paediatrics</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Orthopaedics</label>
+                                        <input type="radio" id="Orthopaedics" name="Speciality" checked={query.speciality === "orthopaedics"} onChange={() => {
+                                            specialitiesOnChange("orthopaedics")
+                                        }} />
+                                        <label htmlFor="Orthopaedics" className="ml-4 cursor-pointer">Orthopaedics</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Obstetrics & Gynaecology</label>
+                                        <input type="radio" id="ObstetricsGynaecology" name="Speciality" checked={query.speciality === "obstetrics-gynaecology"} onChange={() => {
+                                            specialitiesOnChange("obstetrics-gynaecology")
+                                        }} />
+                                        <label htmlFor="ObstetricsGynaecology" className="ml-4 cursor-pointer">Obstetrics & Gynaecology</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Dentistry</label>
+                                        <input type="radio" id="Dentistry" name="Speciality" checked={query.speciality === "dentistry"} onChange={() => {
+                                            specialitiesOnChange("dentistry")
+                                        }} />
+                                        <label htmlFor="Dentistry" className="ml-4 cursor-pointer">Dentistry</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Internal Medicine</label>
+                                        <input type="radio" id="InternalMedicine" name="Speciality" checked={query.speciality === "internal-medicine"} onChange={() => {
+                                            specialitiesOnChange("internal-medicine")
+                                        }} />
+                                        <label htmlFor="InternalMedicine" className="ml-4 cursor-pointer">Internal Medicine</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Family Medicine</label>
+                                        <input type="radio" id="FamilyMedicine" name="Speciality" checked={query.speciality === "family-medicine"} onChange={() => {
+                                            specialitiesOnChange("family-medicine")
+                                        }} />
+                                        <label htmlFor="FamilyMedicine" className="ml-4 cursor-pointer">Family Medicine</label>
                                     </div>
                                     <div className="mb-2">
-                                        <input type="radio" id="anytime" />
-                                        <label htmlFor="anytime" className="ml-4">Radiology</label>
+                                        <input type="radio" id="Radiology" name="Speciality" checked={query.speciality === "radiology"} onChange={() => {
+                                            specialitiesOnChange("radiology")
+                                        }} />
+                                        <label htmlFor="Radiology" className="ml-4 cursor-pointer">Radiology</label>
                                     </div>
                                 </AccordionContent>
                             </AccordionItem>
                         </Accordion.Root>
-
-
-
                     </form>
 
                 </div>
@@ -190,7 +235,6 @@ export default function Doctors({ DoctorsListData }: { DoctorsListData: any }) {
                                                     <HomeIcon className="w-4 h-4 text-life inline" />
                                                     <p className="text-life text-sm inline ml-2">{avClinics.name}</p>
                                                 </div>
-
                                             </div>
                                             <p className="text-xs">({avClinics.distance_text})</p>
                                         </div>
@@ -227,15 +271,16 @@ export default function Doctors({ DoctorsListData }: { DoctorsListData: any }) {
     )
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }: { query: any }) {
 
-    const DoctorsListData = await getDoctorsListData(10, 0)
-
+    const DoctorsListData = await getDoctorsListData(10, 0, query)
 
     return {
         props: {
-            DoctorsListData
+            DoctorsListData,
+            SpecialityQuery: query.speciality ? query.speciality : null
         }
-    }
+    };
 
 }
+

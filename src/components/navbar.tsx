@@ -728,17 +728,17 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
             </div>
           </div>
           <div className="w-full bg-white shadow-md">
-            <div className="hidden md:flex bg-white max-w-[1440px] mx-auto relative ">
-              <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat ">
+            <div className="hidden md:grid grid-cols-12 bg-white max-w-[1440px] mx-auto relative ">
+              <div onMouseOver={() => setOverlay(true)} onMouseLeave={() => { setOverlay(false) }} className="group inline-block shop-by-cat col-span-3">
                 <button
-                  className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele  border-r border-slate-300 w-[242px] items-center flex"
+                  className="group-hover:bg-blue-500 py-[5px]  group-hover:text-white hover:text-white dropdown BeautyCareele flex justify-between border-r border-slate-300  items-center w-full"
                   id="dropdownDefaultButton" data-dropdown-toggle="dropdown">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                     stroke="currentColor" className="w-6 h-6 my-2 float-left ml-3">
                     <path strokeLinecap="round" strokeLinejoin="round"
                       d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                   </svg>
-                  <div className="text-start float-left mr-10 text-sm group-1 align-middle flex items-center ml-2">
+                  <div className="text-start  mr-10 text-base group-1 align-middle flex justify-between ">
                     {langData.navbar.shop_by_cat} </div>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
                     stroke="currentColor" className="h-6 float-right  w-4 mr-2 group-hover:-rotate-180 transition-transform duration-200">
@@ -746,7 +746,7 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
                   </svg>
                 </button>
 
-                <div className=" z-30 absolute bg-white scale-0 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-opacity duration-300 left-0 right-0 ">
+                <div className=" z-30 absolute bg-white -0 group-hover:opacity-100 opacity-0 group-hover:scale-100 scale-0 transition-opacity duration-300 left-0 right-0 ">
                   <div className=" bg-white grid grid-cols-12  ">
                     <div className=" col-span-3 ">
                       {data.data.map((item: any, i: number) => (
@@ -765,9 +765,10 @@ const Navbar: FC<navbarProps> = ({ data, brands_data, isArabic, langData, lang }
                       ))}
                     </div>
 
-                    <div className="space-y-4 col-span-6 py-2 px-1">
-                      <div className="grid xl:grid-cols-4 grid-cols-3 gap-4">
-                        {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (
+                    <div className="space-y-5 col-span-6 py-2 px-1">
+                      <h3 className="font-semibold text-center ">CATEGORIES</h3>
+                      <div className="grid xl:grid-cols-4 grid-cols-3 gap-4 py-2">
+                        {data.data.slice(hoverIndex, hoverIndex + 1).map((item: any, i: number) => (                          
                           item.children.slice(subCatIndex, subCatIndex + 1).map((itm: any) => (
                             itm.sections.map((sec: any) => (
                               sec.images.logo ?
